@@ -4,6 +4,8 @@ import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
-		<h2>Goodmorning starshine, the earth says HELLO!</h2>
+		<h2 className='text-rose-300'>
+			Goodmorning starshine, the earth says HELLO!
+		</h2>
 	</React.StrictMode>
 );
