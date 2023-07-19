@@ -31,10 +31,10 @@ const Navbar = () => {
 				)}
 				{!logged && (
 					<div className='ms-auto flex flex-row gap-2'>
-						<button className='border border-transparent px-4 py-1 rounded-full hover:bg-neutral-200 leading-10'>
+						<button className='border border-transparent px-4 rounded-full hover:bg-neutral-200 leading-10'>
 							Sign up
 						</button>
-						<button className='border rounded-full px-6 py-1 border-blue-600 hover:bg-blue-200 text-blue-500 leading-10'>
+						<button className='border rounded-full px-6 border-blue-600 hover:bg-blue-200 text-blue-500 leading-10'>
 							Login
 						</button>
 					</div>

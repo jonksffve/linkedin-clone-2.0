@@ -12,15 +12,16 @@ const NavbarIcon: React.FC<NavbarIconProps> = ({
 	hrefTo,
 	icon: Icon,
 }) => {
-	const baseClass =
+	const baseClasses =
 		'flex flex-col justify-center items-center cursor-pointer text-neutral-500 hover:text-black min-w-[70px] border-b-2 border-transparent';
+
+	const activeClasses =
+		'flex flex-col justify-center items-center cursor-pointer text-black hover:text-black min-w-[70px] border-b-2 border-black';
 
 	return (
 		<NavLink
 			to={hrefTo}
-			className={({ isActive }) =>
-				isActive ? `${baseClass} border-black text-black` : baseClass
-			}
+			className={({ isActive }) => (isActive ? activeClasses : baseClasses)}
 		>
 			<Icon size={30} />
 			<p className='text-xs'>{title}</p>
