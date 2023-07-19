@@ -2,7 +2,6 @@ import { FaFacebookF } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { FiGithub } from 'react-icons/fi';
 import Button from '../HTMLelements/Buttons/Button';
-import { IconType } from 'react-icons';
 import Divider from '../Divider';
 
 const Socials = () => {
@@ -11,23 +10,26 @@ const Socials = () => {
 			<Divider />
 			<div className='flex flex-col items-center gap-4'>
 				<p className='self-center'>Use your favorite social network</p>
-				<Button
-					icon={FcGoogle as IconType}
-					className='border-black w-2/3'
-				>
+				<Button className='border-black w-2/3'>
 					Google
+					<FcGoogle
+						className='absolute left-5'
+						size={20}
+					/>
 				</Button>
-				<Button
-					icon={FaFacebookF as IconType}
-					className='border-black w-2/3'
-				>
+				<Button className='border-black w-2/3'>
 					Facebook
+					<FaFacebookF
+						className='absolute left-5'
+						size={20}
+					/>
 				</Button>
-				<Button
-					icon={FiGithub as IconType}
-					className='border-black w-2/3'
-				>
+				<Button className='border-black w-2/3'>
 					GitHub
+					<FiGithub
+						className='absolute left-5'
+						size={20}
+					/>
 				</Button>
 			</div>
 		</>
