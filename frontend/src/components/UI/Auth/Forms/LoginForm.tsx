@@ -6,8 +6,16 @@ import Button from '../../HTMLelements/Buttons/Button';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { LoginFormInputs } from '../../../../helpers/types';
 import { useCallback } from 'react';
+import { useAppDispatch } from '../../../../store/hooks';
+import { uiActions } from '../../../../store/slices/ui-slice';
 
 const LoginForm = () => {
+	const dispatch = useAppDispatch();
+
+	const handleRegister = useCallback(() => {
+		dispatch(uiActions.onShowRegisterModal());
+	}, [dispatch]);
+
 	const {
 		register,
 		handleSubmit,
@@ -54,10 +62,15 @@ const LoginForm = () => {
 					Login
 				</Button>
 			</div>
-			<p className='flex flex-row justify-center items-center gap-2'>
-				New to LinkedIn?
-				<p className='hover:cursor-pointer'>Register</p>
-			</p>
+			<div className='flex flex-row justify-center items-center gap-2'>
+				<p>New to LinkedIn?</p>
+				<p
+					className='hover:cursor-pointer'
+					onClick={handleRegister}
+				>
+					Register
+				</p>
+			</div>
 		</form>
 	);
 };

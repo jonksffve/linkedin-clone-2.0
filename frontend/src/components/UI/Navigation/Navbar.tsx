@@ -4,9 +4,18 @@ import NavbarIcons from './NavbarIcons';
 import SearchBar from './SearchBar';
 import { ROUTE_HOME } from '../../../helpers/routes';
 import UserMenu from './UserMenu';
+import Button from '../HTMLelements/Buttons/Button';
+import { useCallback } from 'react';
+import { useAppDispatch } from '../../../store/hooks';
+import { uiActions } from '../../../store/slices/ui-slice';
 
 const Navbar = () => {
 	const logged = false;
+	const dispatch = useAppDispatch();
+
+	const handleRegister = useCallback(() => {
+		dispatch(uiActions.onShowRegisterModal());
+	}, [dispatch]);
 
 	return (
 		<div className='px-4 py-2 bg-slate-50 shadow-md'>
@@ -31,12 +40,8 @@ const Navbar = () => {
 				)}
 				{!logged && (
 					<div className='ms-auto flex flex-row gap-2'>
-						<button className='border border-transparent px-4 rounded-full hover:bg-neutral-200 leading-10'>
-							Sign up
-						</button>
-						<button className='border rounded-full px-6 border-blue-600 hover:bg-blue-200 text-blue-500 leading-10'>
-							Login
-						</button>
+						<Button onClick={handleRegister}>Register</Button>
+						<Button className='border-black'>Login</Button>
 					</div>
 				)}
 			</nav>
