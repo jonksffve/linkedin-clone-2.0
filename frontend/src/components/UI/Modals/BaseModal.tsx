@@ -7,6 +7,9 @@ interface BaseModalProps {
 	onClose: () => void;
 }
 
+/**
+ * Base layout component to render a modal
+ */
 const BaseModal: React.FC<BaseModalProps> = ({
 	children,
 	onShow,

@@ -6,7 +6,7 @@ import { IoNotifications } from 'react-icons/io5';
 import {
 	ROUTE_CHAT,
 	ROUTE_CONNECTIONS,
-	ROUTE_HOME,
+	ROUTE_FEED,
 	ROUTE_JOBS,
 	ROUTE_NOTIFICATIONS,
 } from '../../../helpers/routes';
@@ -17,7 +17,7 @@ const NavbarIcons = () => {
 			<NavbarIcon
 				icon={BiSolidHome as IconType}
 				title='Home'
-				hrefTo={ROUTE_HOME}
+				hrefTo={ROUTE_FEED}
 			/>
 			<NavbarIcon
 				icon={BsPeopleFill as IconType}

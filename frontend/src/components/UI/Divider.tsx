@@ -1,3 +1,6 @@
+/**
+ * Renders 2 horizontal lines with a text in between
+ */
 const Divider = () => {
 	return (
 		<div className='relative flex py-5 items-center'>

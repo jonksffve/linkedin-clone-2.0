@@ -8,6 +8,9 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	errors?: FieldError | undefined;
 }
 
+/**
+ * Extends the basic input element functionality
+ */
 const Input = forwardRef<HTMLInputElement, InputProps>(
 	({ type = 'text', icon: Icon, errors, id, labelText, ...props }, ref) => {
 		return (

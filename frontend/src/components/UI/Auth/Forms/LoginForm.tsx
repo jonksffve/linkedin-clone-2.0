@@ -9,6 +9,9 @@ import { useCallback } from 'react';
 import { useAppDispatch } from '../../../../store/hooks';
 import { uiActions } from '../../../../store/slices/ui-slice';
 
+/**
+ * Renders a Form used to login
+ */
 const LoginForm = () => {
 	const dispatch = useAppDispatch();
 

@@ -4,6 +4,9 @@ interface HeaderProps {
 	title: string;
 }
 
+/**
+ * Renders a heading component with a title and the page's Logo
+ */
 const Header: React.FC<HeaderProps> = ({ title }) => {
 	return (
 		<div className='flex flex-col justify-center items-center gap-2 mb-4'>

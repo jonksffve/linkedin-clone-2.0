@@ -3,6 +3,9 @@ import Divider from '../Divider';
 import { FaFacebookF } from 'react-icons/fa';
 import { FiGithub } from 'react-icons/fi';
 
+/**
+ * Component that renders the social icons for Oauth
+ */
 const SocialsMinimized = () => {
 	return (
 		<>

@@ -10,6 +10,9 @@ import { BiImageAdd } from 'react-icons/bi';
 import { useAppDispatch } from '../../../../store/hooks';
 import { uiActions } from '../../../../store/slices/ui-slice';
 
+/**
+ * Renders a Form used to register new users
+ */
 const RegisterForm = () => {
 	const dispatch = useAppDispatch();
 

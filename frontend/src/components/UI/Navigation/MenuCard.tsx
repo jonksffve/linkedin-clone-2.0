@@ -6,11 +6,9 @@ interface MenuCardProps {
 }
 
 /**
- * Component that renders a menu and closes when clicked outside [ref]: https://blog.logrocket.com/detect-click-outside-react-component-how-to/
+ * Component that renders a menu and closes when clicked outside
+ * @see https://blog.logrocket.com/detect-click-outside-react-component-how-to/
  *
- * @component
- * @param children React nodes
- * @param onClickOutside Callback function that sets the menu's visibility
  */
 const MenuCard: React.FC<MenuCardProps> = ({ children, onClickOutside }) => {
 	const ref = useRef<HTMLDivElement>(null);

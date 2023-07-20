@@ -6,6 +6,9 @@ import SocialsMinimized from '../Auth/SocialsMinimized';
 import BaseModal from './BaseModal';
 import { useCallback, useState } from 'react';
 
+/**
+ * Renders a modal with a RegisterForm for registration
+ */
 const RegisterModal = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const uiState = useAppSelector((state) => state.ui);
