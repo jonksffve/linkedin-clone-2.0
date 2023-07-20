@@ -7,8 +7,12 @@ import { IconType } from 'react-icons';
 import Button from '../../HTMLelements/Buttons/Button';
 import { AiOutlineMail } from 'react-icons/ai';
 import { BiImageAdd } from 'react-icons/bi';
+import { useAppDispatch } from '../../../../store/hooks';
+import { uiActions } from '../../../../store/slices/ui-slice';
 
 const RegisterForm = () => {
+	const dispatch = useAppDispatch();
+
 	const {
 		register,
 		handleSubmit,
@@ -29,6 +33,11 @@ const RegisterForm = () => {
 		},
 		[]
 	);
+
+	const showLoginHandler = useCallback(() => {
+		dispatch(uiActions.onCloseRegisterModal());
+		dispatch(uiActions.onShowLoginModal());
+	}, [dispatch]);
 
 	return (
 		<form
@@ -84,6 +93,15 @@ const RegisterForm = () => {
 				>
 					Create
 				</Button>
+			</div>
+			<div className='flex flex-row justify-center items-center gap-2'>
+				<p>Already in LinkedIn?</p>
+				<p
+					className='hover:cursor-pointer'
+					onClick={showLoginHandler}
+				>
+					Login
+				</p>
 			</div>
 		</form>
 	);

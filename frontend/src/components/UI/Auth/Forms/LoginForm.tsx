@@ -12,7 +12,8 @@ import { uiActions } from '../../../../store/slices/ui-slice';
 const LoginForm = () => {
 	const dispatch = useAppDispatch();
 
-	const handleRegister = useCallback(() => {
+	const showRegisterHandler = useCallback(() => {
+		dispatch(uiActions.onCloseLoginModal());
 		dispatch(uiActions.onShowRegisterModal());
 	}, [dispatch]);
 
@@ -66,7 +67,7 @@ const LoginForm = () => {
 				<p>New to LinkedIn?</p>
 				<p
 					className='hover:cursor-pointer'
-					onClick={handleRegister}
+					onClick={showRegisterHandler}
 				>
 					Register
 				</p>
