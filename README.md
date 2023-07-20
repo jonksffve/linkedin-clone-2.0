@@ -38,3 +38,10 @@ To run this project locally, follow these steps:
 - Implement better TokenAuthentication as per DRF docs: https://james1345.github.io/django-rest-knox/
 - Implement OAuth so we can access with gmail or other platform: https://django-oauth-toolkit.readthedocs.io/en/latest/getting_started.html#what-is-oauth
 - Translate model error messages: https://stackoverflow.com/questions/65724832/how-do-i-customize-and-translate-error-messages-in-djangos-passwordchangeform
+
+### FEATURES
+
+- Backend:
+  - It implements a Token authentication system with Knox. That is not: limited to one-token-per-user. can logout all instances at once. deletion of token on logout.
+  - Knox stores token in a secure hash form. As to avoid unrestricted access if the dabatase was compromissed.
+  - Token have expiricy date.
