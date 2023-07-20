@@ -1,5 +1,8 @@
 import { twMerge } from 'tailwind-merge';
 
+/**
+ * Extends the basic button element functionality
+ */
 const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
 	type = 'button',
 	disabled,
