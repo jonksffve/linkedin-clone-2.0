@@ -13,8 +13,12 @@ const Navbar = () => {
 	const logged = false;
 	const dispatch = useAppDispatch();
 
-	const handleRegister = useCallback(() => {
+	const handleClickRegister = useCallback(() => {
 		dispatch(uiActions.onShowRegisterModal());
+	}, [dispatch]);
+
+	const handleClickLogin = useCallback(() => {
+		dispatch(uiActions.onShowLoginModal());
 	}, [dispatch]);
 
 	return (
@@ -40,8 +44,13 @@ const Navbar = () => {
 				)}
 				{!logged && (
 					<div className='ms-auto flex flex-row gap-2'>
-						<Button onClick={handleRegister}>Register</Button>
-						<Button className='border-black'>Login</Button>
+						<Button onClick={handleClickRegister}>Register</Button>
+						<Button
+							className='border-black'
+							onClick={handleClickLogin}
+						>
+							Login
+						</Button>
 					</div>
 				)}
 			</nav>
