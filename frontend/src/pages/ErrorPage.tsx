@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ROUTE_HOME } from '../helpers/routes';
+import { ROUTE_FEED } from '../helpers/routes';
 import { IoIosArrowBack } from 'react-icons/io';
 
 const ErrorPage = () => {
@@ -11,7 +11,7 @@ const ErrorPage = () => {
 				Server responded with an{' '}
 				<span className='text-rose-600 font-bold'>error</span>, better be safe
 			</p>
-			<Link to={ROUTE_HOME}>
+			<Link to={ROUTE_FEED}>
 				<button className='flex flex-row items-center hover:bg-neutral-400 rounded-full p-3 mt-2 border border-black'>
 					<IoIosArrowBack />
 					<p>Get back home!</p>
