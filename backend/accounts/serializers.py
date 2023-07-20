@@ -11,10 +11,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
         """
         Create a custom user object and properly hash the password
         """
-        password = validated_data["password"]
-        user = super().create(validated_data)
-        user.set_password(password)
-        user.save()
+        user = CustomUser.objects.create_user(**validated_data)
         return user
 
     class Meta:
