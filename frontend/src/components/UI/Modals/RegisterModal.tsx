@@ -4,9 +4,10 @@ import RegisterForm from '../Auth/Forms/RegisterForm';
 import Header from '../Auth/Header';
 import SocialsMinimized from '../Auth/SocialsMinimized';
 import BaseModal from './BaseModal';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 const RegisterModal = () => {
+	const [isLoading, setIsLoading] = useState(false);
 	const uiState = useAppSelector((state) => state.ui);
 	const dispatch = useAppDispatch();
 
@@ -18,6 +19,7 @@ const RegisterModal = () => {
 		<BaseModal
 			onShow={uiState.showRegisterModal}
 			onClose={handleClose}
+			disabled={isLoading}
 		>
 			<Header title='Hello, register your information' />
 			<RegisterForm />

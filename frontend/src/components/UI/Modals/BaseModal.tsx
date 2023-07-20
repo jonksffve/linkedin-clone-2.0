@@ -3,10 +3,16 @@ import { AiOutlineClose } from 'react-icons/ai';
 interface BaseModalProps {
 	children: React.ReactNode;
 	onShow: boolean;
+	disabled: boolean;
 	onClose: () => void;
 }
 
-const BaseModal: React.FC<BaseModalProps> = ({ onShow, onClose, children }) => {
+const BaseModal: React.FC<BaseModalProps> = ({
+	children,
+	onShow,
+	disabled,
+	onClose,
+}) => {
 	if (!onShow) return;
 
 	return (
