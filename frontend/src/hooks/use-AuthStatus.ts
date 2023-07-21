@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { useAppDispatch } from '../store/hooks';
 import { uiActions } from '../store/slices/ui-slice';
 import { ROUTE_INDEX } from '../helpers/routes';
 import { useEffect, useCallback } from 'react';
@@ -13,7 +13,6 @@ import { toast } from 'react-toastify';
  * Custom hook that checks if the user is logged in, otherwise it redirects you to index page and opens the modal
  */
 const UseAuthStatus = () => {
-	const userState = useAppSelector((state) => state.user);
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
@@ -34,14 +33,12 @@ const UseAuthStatus = () => {
 
 		getUserInformationAPI(userToken)
 			.then((response) => {
-				const { avatar, id, name } = response?.data as UserResponse;
+				const user = response?.data as UserResponse;
 				dispatch(
 					userActions.setUser({
 						token: userToken,
-						avatar,
-						id,
-						name,
-						logged: undefined,
+						...user,
+						logged: false,
 					})
 				);
 			})

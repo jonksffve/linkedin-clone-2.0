@@ -8,20 +8,20 @@ export interface RegisterFormInputs {
 	password: string;
 	first_name: string;
 	last_name: string;
-	avatar: File | undefined | null;
+	avatar: File | undefined;
 }
 
 export interface UserState {
-	token: string | undefined;
-	name: string | undefined;
-	avatar: string | null | undefined;
-	id: number | undefined;
-	logged: boolean | undefined;
+	token: string;
+	name: string;
+	avatar: string;
+	id: number;
+	logged: boolean;
 }
 
 export interface UserResponse {
 	id: number;
-	avatar: string | null;
+	avatar: string;
 	email: string;
 	name: string;
 }

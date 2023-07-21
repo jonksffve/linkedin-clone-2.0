@@ -47,7 +47,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 				const { token, user } = response?.data as TokenResponse;
 				reset();
 				dispatch(uiActions.onCloseLoginModal());
-				dispatch(userActions.setUser({ token, ...user, logged: undefined }));
+				dispatch(userActions.setUser({ token, ...user, logged: false }));
 				localStorage.setItem('auth_token', token);
 			} catch (error) {
 				toast.error('Please check the given credentials.', toastConfig);
