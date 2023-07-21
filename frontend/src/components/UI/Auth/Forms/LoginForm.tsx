@@ -4,15 +4,23 @@ import Input from '../../HTMLelements/Inputs/Input';
 import { IconType } from 'react-icons';
 import Button from '../../HTMLelements/Buttons/Button';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { LoginFormInputs } from '../../../../helpers/types';
+import { LoginFormInputs, TokenResponse } from '../../../../helpers/types';
 import { useCallback } from 'react';
 import { useAppDispatch } from '../../../../store/hooks';
 import { uiActions } from '../../../../store/slices/ui-slice';
+import { createTokenAuthAPI } from '../../../../api/auth';
+import { userActions } from '../../../../store/slices/user-slice';
+import { toast } from 'react-toastify';
+import { toastConfig } from '../../../../helpers/toastifyConfig';
+
+interface LoginFormProps {
+	onSubmit: (value: boolean) => void;
+}
 
 /**
  * Renders a Form used to login
  */
-const LoginForm = () => {
+const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 	const dispatch = useAppDispatch();
 
 	const showRegisterHandler = useCallback(() => {
@@ -23,31 +31,45 @@ const LoginForm = () => {
 	const {
 		register,
 		handleSubmit,
+		reset,
 		formState: { errors },
 	} = useForm<LoginFormInputs>({
 		defaultValues: {
-			email: undefined,
+			username: undefined,
 			password: undefined,
 		},
 	});
 
-	const onSubmit: SubmitHandler<LoginFormInputs> = useCallback((data) => {
-		console.log(data);
-	}, []);
+	const submitHandler: SubmitHandler<LoginFormInputs> = useCallback(
+		async (data) => {
+			try {
+				const response = await createTokenAuthAPI(data, onSubmit);
+				const { token, user } = response?.data as TokenResponse;
+				reset();
+				dispatch(uiActions.onCloseLoginModal());
+				dispatch(userActions.setUser({ token, ...user, logged: undefined }));
+				localStorage.setItem('auth_token', token);
+			} catch (error) {
+				toast.error('Please check the given credentials.', toastConfig);
+			}
+		},
+		[onSubmit, reset, dispatch]
+	);
 
 	return (
 		<form
 			autoComplete='off'
 			className='flex flex-col gap-4'
-			onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+			onSubmit={(event) => void handleSubmit(submitHandler)(event)}
 		>
 			<Input
 				labelText='Email'
 				id='email'
 				placeholder='Enter your email'
+				type='email'
 				icon={AiOutlineMail as IconType}
-				errors={errors.email}
-				{...register('email', { required: true })}
+				errors={errors.username}
+				{...register('username', { required: true })}
 			/>
 			<Input
 				labelText='Password'

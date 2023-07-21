@@ -7,18 +7,26 @@ import { IconType } from 'react-icons';
 import Button from '../../HTMLelements/Buttons/Button';
 import { AiOutlineMail } from 'react-icons/ai';
 import { BiImageAdd } from 'react-icons/bi';
-import { useAppDispatch } from '../../../../store/hooks';
-import { uiActions } from '../../../../store/slices/ui-slice';
+import { useAppDispatch } from '@/store/hooks';
+import { uiActions } from '@/store/slices/ui-slice';
+import { createUserAPI } from '@api/auth';
+
+interface RegisterFormProps {
+	onSubmit: (value: boolean) => void;
+}
 
 /**
  * Renders a Form used to register new users
  */
-const RegisterForm = () => {
+const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 	const dispatch = useAppDispatch();
 
 	const {
 		register,
 		handleSubmit,
+		reset,
+		setError,
+		setValue,
 		formState: { errors },
 	} = useForm<RegisterFormInputs>({
 		defaultValues: {
@@ -30,17 +38,17 @@ const RegisterForm = () => {
 		},
 	});
 
-	const submitHandler: SubmitHandler<RegisterFormInputs> = useCallback(
-		(data) => {
-			console.log(data);
-		},
-		[]
-	);
-
 	const showLoginHandler = useCallback(() => {
 		dispatch(uiActions.onCloseRegisterModal());
 		dispatch(uiActions.onShowLoginModal());
 	}, [dispatch]);
+
+	const submitHandler: SubmitHandler<RegisterFormInputs> = useCallback(
+		(data) => {
+			void createUserAPI(data, onSubmit, setError, reset, showLoginHandler);
+		},
+		[onSubmit, reset, setError, showLoginHandler]
+	);
 
 	return (
 		<form
@@ -86,8 +94,14 @@ const RegisterForm = () => {
 				labelText='Avatar'
 				id='avatar'
 				type='file'
+				accept='image/*'
 				icon={BiImageAdd as IconType}
-				{...register('avatar', { required: true })}
+				{...(register('avatar', { required: false }),
+				{
+					onChange: (event) => {
+						setValue('avatar', event.target.files?.item(0));
+					},
+				})}
 			/>
 			<div className='flex flex-col md:flex-row items-center justify-end'>
 				<Button
