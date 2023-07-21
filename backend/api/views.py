@@ -4,7 +4,7 @@ from rest_framework import generics, permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 
 from accounts.models import CustomUser
-from accounts.serializers import UserCreationSerializer
+from accounts.serializers import UserCreationSerializer, UserSerializer
 
 from knox.views import LoginView as KnoxLoginView
 
@@ -14,14 +14,13 @@ class UserCreationView(generics.CreateAPIView):
     Function that creates User model instances
 
     Returns:
-        - 200 Ok: with a serialized representation of the object
+        - 200 Ok: with a serialized representation of the user object
         - 400 Bad request: if ValidationError was raised
 
     Raises:
         - ValidationError: when failed to validate data
     """
 
-    queryset = CustomUser.objects.all()
     serializer_class = UserCreationSerializer
 
 
@@ -46,3 +45,19 @@ class LoginView(KnoxLoginView):
         user = serializer.validated_data["user"]
         login(request, user)
         return super(LoginView, self).post(request, format=None)
+
+
+class UserRetrieveInformationView(generics.RetrieveAPIView):
+    """
+    Function that retrieves current loggedin user information
+
+    Returns:
+        - 200 Ok: with a serialized representation of the user object
+        - 401 Unauthorized: When user didn't provide valid authorization
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
