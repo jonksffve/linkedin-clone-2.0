@@ -27,7 +27,7 @@ const MenuCard: React.FC<MenuCardProps> = ({ children, onClickOutside }) => {
 
 	return (
 		<div
-			className='absolute bg-slate-50 w-[280px] p-4 right-0 top-14 shadow-md border rounded-md'
+			className='absolute bg-slate-50 w-[280px] p-4 right-0 top-14 shadow-md border rounded-md z-50'
 			ref={ref}
 			onClick={onClickOutside}
 		>
