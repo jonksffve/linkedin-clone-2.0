@@ -99,7 +99,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 				{...(register('avatar', { required: false }),
 				{
 					onChange: (event) => {
-						setValue('avatar', event.target.files?.item(0));
+						if (!event.target.files?.item(0)) return;
+						setValue('avatar', event.target.files.item(0)!);
 					},
 				})}
 			/>
