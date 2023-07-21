@@ -1,19 +1,12 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-
-interface UserState {
-	token: string | undefined;
-	name: string | undefined;
-	avatar: string | undefined;
-	id: string | undefined;
-	logged: boolean;
-}
+import { UserState } from '../../helpers/types';
 
 const initialState: UserState = {
 	token: undefined,
 	name: undefined,
 	avatar: undefined,
 	id: undefined,
-	logged: false,
+	logged: undefined,
 };
 
 const userSlice = createSlice({
@@ -21,7 +14,7 @@ const userSlice = createSlice({
 	initialState,
 	reducers: {
 		setUser: (state, action: PayloadAction<UserState>) => {
-			const { id, token, name, avatar } = action.payload;
+			const { id, token, name, avatar, email } = action.payload;
 			state.token = token;
 			state.name = name;
 			state.avatar = avatar;

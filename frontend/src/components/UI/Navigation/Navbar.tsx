@@ -6,14 +6,14 @@ import { ROUTE_FEED } from '../../../helpers/routes';
 import UserMenu from './UserMenu';
 import Button from '../HTMLelements/Buttons/Button';
 import { useCallback } from 'react';
-import { useAppDispatch } from '../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { uiActions } from '../../../store/slices/ui-slice';
 
 /**
  * Top navigation bar component
  */
 const Navbar = () => {
-	const logged = false;
+	const userState = useAppSelector((state) => state.user);
 	const dispatch = useAppDispatch();
 
 	const handleClickRegister = useCallback(() => {
@@ -34,7 +34,7 @@ const Navbar = () => {
 						alt=''
 					/>
 				</Link>
-				{logged && (
+				{userState.logged && (
 					<>
 						<div className='flex flex-row gap-4 items-center'>
 							<SearchBar />
@@ -45,7 +45,7 @@ const Navbar = () => {
 						</div>
 					</>
 				)}
-				{!logged && (
+				{!userState.logged && (
 					<div className='ms-auto flex flex-row gap-2'>
 						<Button onClick={handleClickRegister}>Register</Button>
 						<Button
