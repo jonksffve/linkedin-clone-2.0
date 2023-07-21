@@ -9,6 +9,7 @@ import axios from 'axios';
 import {
 	ENDPOINT_ACCOUNT,
 	ENDPOINT_LOGIN,
+	ENDPOINT_LOGOUT,
 	ENDPOINT_PROFILE,
 } from '@/helpers/routes';
 import { UseFormReset, UseFormSetError } from 'react-hook-form';
@@ -85,6 +86,22 @@ export const getUserInformationAPI = async (token: string) => {
 		if (axios.isAxiosError(error)) {
 			throw error;
 		}
+		toast.error('Something unexpected happened.', toastConfig);
+	}
+};
+
+export const logoutUserAPI = async (token: string) => {
+	try {
+		await axios.post(
+			ENDPOINT_LOGOUT,
+			{},
+			{
+				headers: {
+					Authorization: `Token ${token}`,
+				},
+			}
+		);
+	} catch (error) {
 		toast.error('Something unexpected happened.', toastConfig);
 	}
 };
