@@ -10,7 +10,7 @@ const RootLayout = () => {
 	return (
 		<div className='flex flex-col h-screen'>
 			<Navbar />
-			<main className='p-4 bg-slate-100 h-full flex-1 overflow-y-auto'>
+			<main className='p-2 bg-slate-200 h-full flex-1 overflow-y-auto'>
 				<Outlet />
 			</main>
 			<RegisterModal />
