@@ -22,9 +22,7 @@ const UserMenu = () => {
 
 	const handleLogOut = useCallback(async () => {
 		await logoutUserAPI(userState.token);
-		//delete localstorage
 		localStorage.removeItem('auth_token');
-		//redirect to index
 		navigate(ROUTE_INDEX);
 		navigate(0);
 	}, [userState.token, navigate]);
