@@ -1,4 +1,4 @@
-import LogoIcon from '../../../assets/linkedin-logo-icon.png';
+import LogoIcon from '@assets/linkedin-logo-icon.png';
 
 interface HeaderProps {
 	title: string;

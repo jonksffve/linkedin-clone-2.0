@@ -1,16 +1,16 @@
 import { toast } from 'react-toastify';
-import { toastConfig } from '../helpers/toastifyConfig';
+import { toastConfig } from '@/helpers/toastifyConfig';
 import {
 	ErrorResponse,
 	LoginFormInputs,
 	RegisterFormInputs,
-} from '../helpers/types';
+} from '@/helpers/types';
 import axios from 'axios';
 import {
 	ENDPOINT_ACCOUNT,
 	ENDPOINT_LOGIN,
 	ENDPOINT_PROFILE,
-} from '../helpers/routes';
+} from '@/helpers/routes';
 import { UseFormReset, UseFormSetError } from 'react-hook-form';
 
 export const createUserAPI = async (

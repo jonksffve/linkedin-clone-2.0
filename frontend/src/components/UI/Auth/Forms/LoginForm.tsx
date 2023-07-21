@@ -4,14 +4,14 @@ import Input from '../../HTMLelements/Inputs/Input';
 import { IconType } from 'react-icons';
 import Button from '../../HTMLelements/Buttons/Button';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { LoginFormInputs, TokenResponse } from '../../../../helpers/types';
+import { LoginFormInputs, TokenResponse } from '@/helpers/types';
 import { useCallback } from 'react';
-import { useAppDispatch } from '../../../../store/hooks';
-import { uiActions } from '../../../../store/slices/ui-slice';
-import { createTokenAuthAPI } from '../../../../api/auth';
-import { userActions } from '../../../../store/slices/user-slice';
+import { useAppDispatch } from '@/store/hooks';
+import { uiActions } from '@/store/slices/ui-slice';
+import { createTokenAuthAPI } from '@/api/auth';
+import { userActions } from '@/store/slices/user-slice';
 import { toast } from 'react-toastify';
-import { toastConfig } from '../../../../helpers/toastifyConfig';
+import { toastConfig } from '@/helpers/toastifyConfig';
 
 interface LoginFormProps {
 	onSubmit: (value: boolean) => void;

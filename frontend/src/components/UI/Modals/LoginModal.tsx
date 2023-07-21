@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import LoginForm from '../Auth/Forms/LoginForm';
 import Header from '../Auth/Header';
 import SocialsMinimized from '../Auth/SocialsMinimized';
 import BaseModal from './BaseModal';
-import { uiActions } from '../../../store/slices/ui-slice';
+import { uiActions } from '@/store/slices/ui-slice';
 
 /**
  * Renders a modal with a LoginForm for authentication

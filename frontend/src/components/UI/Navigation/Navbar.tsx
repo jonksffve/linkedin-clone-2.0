@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
-import LogoIcon from '../../../assets/linkedin-logo-icon.png';
+import LogoIcon from '@assets/linkedin-logo-icon.png';
 import NavbarIcons from './NavbarIcons';
 import SearchBar from './SearchBar';
-import { ROUTE_FEED } from '../../../helpers/routes';
+import { ROUTE_FEED } from '@/helpers/routes';
 import UserMenu from './UserMenu';
 import Button from '../HTMLelements/Buttons/Button';
 import { useCallback } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { uiActions } from '../../../store/slices/ui-slice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { uiActions } from '@/store/slices/ui-slice';
 
 /**
  * Top navigation bar component

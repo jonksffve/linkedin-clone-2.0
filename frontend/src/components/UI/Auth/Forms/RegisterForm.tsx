@@ -1,5 +1,5 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { RegisterFormInputs } from '../../../../helpers/types';
+import { RegisterFormInputs } from '@/helpers/types';
 import { useCallback } from 'react';
 import Input from '../../HTMLelements/Inputs/Input';
 import { BsKey, BsKeyboard } from 'react-icons/bs';
@@ -9,7 +9,7 @@ import { AiOutlineMail } from 'react-icons/ai';
 import { BiImageAdd } from 'react-icons/bi';
 import { useAppDispatch } from '@/store/hooks';
 import { uiActions } from '@/store/slices/ui-slice';
-import { createUserAPI } from '@api/auth';
+import { createUserAPI } from '@/api/auth';
 
 interface RegisterFormProps {
 	onSubmit: (value: boolean) => void;

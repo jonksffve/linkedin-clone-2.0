@@ -1,5 +1,5 @@
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { uiActions } from '../../../store/slices/ui-slice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { uiActions } from '@/store/slices/ui-slice';
 import RegisterForm from '../Auth/Forms/RegisterForm';
 import Header from '../Auth/Header';
 import SocialsMinimized from '../Auth/SocialsMinimized';
