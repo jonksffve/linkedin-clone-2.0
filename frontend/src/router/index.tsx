@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import IndexPage from '../pages/IndexPage';
 import RootLayout from './layouts/RootLayout';
 import ErrorPage from '../pages/ErrorPage';
+import FeedPage from '@/pages/FeedPage';
 
 export const router = createBrowserRouter([
 	{
@@ -15,7 +16,7 @@ export const router = createBrowserRouter([
 			},
 			{
 				path: 'feed/',
-				element: <h2>Feed</h2>,
+				element: <FeedPage />,
 			},
 			{
 				path: 'connections/',
