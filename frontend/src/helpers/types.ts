@@ -1,5 +1,5 @@
 export interface LoginFormInputs {
-	email: string;
+	username: string;
 	password: string;
 }
 
@@ -8,5 +8,30 @@ export interface RegisterFormInputs {
 	password: string;
 	first_name: string;
 	last_name: string;
-	avatar: File | undefined;
+	avatar: File | undefined | null;
+}
+
+export interface UserState {
+	token: string | undefined;
+	name: string | undefined;
+	avatar: string | null | undefined;
+	id: number | undefined;
+	logged: boolean | undefined;
+}
+
+export interface UserResponse {
+	id: number;
+	avatar: string | null;
+	email: string;
+	name: string;
+}
+
+export interface TokenResponse {
+	token: string;
+	user: UserResponse;
+}
+
+export interface ErrorResponse {
+	key: string;
+	value: string;
 }
