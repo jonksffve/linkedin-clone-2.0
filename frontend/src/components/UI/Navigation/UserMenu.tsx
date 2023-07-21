@@ -73,7 +73,9 @@ const UserMenu = () => {
 							<hr />
 							<Button
 								className='hover:border-black'
-								onClick={void handleLogOut}
+								onClick={() => {
+									void handleLogOut();
+								}}
 							>
 								Logout
 								<div className='absolute left-2'>
