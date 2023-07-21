@@ -1,4 +1,5 @@
 import { AiOutlineClose } from 'react-icons/ai';
+import Spinner from '../Spinner';
 
 interface BaseModalProps {
 	children: React.ReactNode;
@@ -31,6 +32,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
 					size={20}
 				/>
 				{children}
+				{disabled && <Spinner />}
 			</div>
 		</>
 	);
