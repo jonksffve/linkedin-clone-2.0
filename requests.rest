@@ -1,0 +1,20 @@
+### Checking responses
+@localhost = http://localhost:8000/api
+
+
+POST {{localhost}}/login/
+content-type: application/json
+
+{
+    "username": "admin@site.com",
+    "password": "maijo132"
+}
+
+### Cheking logout
+POST http://localhost:8000/api/auth/logout/
+Authorization: Token f90e831fbf71b9d8a28e4bbfa1de748fa805e31fd5355ceaf7f5190e42f60926
+
+
+###Checking retrieve user information
+GET {{localhost}}/account/profile/
+Authorization: Token d80572e5f39d3cfbbb8aa27c137564bebe8b1ecd49752c7d72dc296dc9db9982
