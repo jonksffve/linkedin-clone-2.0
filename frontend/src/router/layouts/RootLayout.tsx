@@ -8,9 +8,9 @@ const RootLayout = () => {
 	useAuthStatus();
 
 	return (
-		<div className='flex flex-col h-full'>
+		<div className='flex flex-col h-screen'>
 			<Navbar />
-			<main className='p-4 bg-neutral-100 h-full flex-1 overflow-y-auto'>
+			<main className='p-4 bg-slate-100 h-full flex-1 overflow-y-auto'>
 				<Outlet />
 			</main>
 			<RegisterModal />
