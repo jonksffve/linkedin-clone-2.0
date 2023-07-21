@@ -25,6 +25,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 							- Field is required
 						</p>
 					)}
+					{errors && errors.type === 'custom' && (
+						<p className='text-rose-500 italic font-semibold'>
+							- {errors.message}
+						</p>
+					)}
 				</label>
 				<div className='relative w-full flex items-center'>
 					<input
