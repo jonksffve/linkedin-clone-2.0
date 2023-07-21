@@ -25,7 +25,7 @@ const RegisterModal = () => {
 			disabled={isLoading}
 		>
 			<Header title='Hello, register your information' />
-			<RegisterForm />
+			<RegisterForm onSubmit={setIsLoading} />
 			<SocialsMinimized />
 		</BaseModal>
 	);

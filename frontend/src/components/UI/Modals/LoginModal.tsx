@@ -26,7 +26,7 @@ const LoginModal = () => {
 			onClose={handleClose}
 		>
 			<Header title='Login information' />
-			<LoginForm />
+			<LoginForm onSubmit={setIsLoading} />
 			<SocialsMinimized />
 		</BaseModal>
 	);
