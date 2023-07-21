@@ -16,18 +16,12 @@ const UseAuthStatus = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
-	const clearAllData = useCallback(() => {
-		navigate(ROUTE_INDEX);
-		dispatch(uiActions.onShowLoginModal());
-		dispatch(userActions.removeUser());
-		localStorage.removeItem('auth_token');
-	}, [dispatch, navigate]);
-
 	useEffect(() => {
 		const userToken = localStorage.getItem('auth_token');
 
 		if (!userToken) {
-			clearAllData();
+			navigate(ROUTE_INDEX);
+			dispatch(uiActions.onShowLoginModal());
 			return;
 		}
 
@@ -43,10 +37,11 @@ const UseAuthStatus = () => {
 				);
 			})
 			.catch((err) => {
-				clearAllData();
+				dispatch(userActions.removeUser());
+				localStorage.removeItem('auth_token');
 				toast.error('Invalid token provided. Log in again.', toastConfig);
 			});
-	}, [dispatch, navigate, clearAllData]);
+	}, [dispatch, navigate]);
 };
 
 export default UseAuthStatus;
