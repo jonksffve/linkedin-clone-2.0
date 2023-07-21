@@ -12,11 +12,11 @@ export interface RegisterFormInputs {
 }
 
 export interface UserState {
-	token: string;
-	name: string;
-	avatar: string;
-	id: number;
-	logged: boolean;
+	token: string | undefined;
+	name: string | undefined;
+	avatar: string | undefined;
+	id: number | undefined;
+	logged: boolean | undefined;
 }
 
 export interface UserResponse {
