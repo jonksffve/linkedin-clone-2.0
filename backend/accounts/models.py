@@ -29,6 +29,13 @@ class CustomUser(AbstractUser):
         blank=True,
         null=True,
     )
+    banner = models.ImageField(
+        _("banner image"),
+        upload_to="avatar/banner/",
+        default="banner-placeholder.jpeg",
+        blank=True,
+        null=True,
+    )
     title = models.CharField(_("title"), max_length=50)
     description = models.TextField(_("description"))
 
@@ -56,3 +63,46 @@ class CustomUser(AbstractUser):
     def get_short_name(self):
         """Return the short name for the user."""
         return self.first_name
+
+    @property
+    def get_followers(self):
+        return self.followers.count()
+
+    @property
+    def get_following(self):
+        return self.following.count()
+
+    @property
+    def get_posts(self):
+        return self.posts.count()
+
+    def __str__(self):
+        return self.email
+
+
+class UserFollows(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        verbose_name=_("User"),
+        related_name="following",
+        on_delete=models.CASCADE,
+    )
+    target_user = models.ForeignKey(
+        CustomUser,
+        verbose_name=_("Target"),
+        related_name="followers",
+        on_delete=models.CASCADE,
+    )
+    date_added = models.DateTimeField(_("Follow date"), auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "target_user"], name="unique_follow"
+            )
+        ]
+
+        ordering = ["-date_added"]
+
+    def __str__(self):
+        return f"{self.user} follows {self.target_user}"
