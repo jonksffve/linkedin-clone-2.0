@@ -16,10 +16,20 @@ class UserCreationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ["first_name", "last_name", "email", "password", "avatar"]
+        fields = [
+            "first_name",
+            "last_name",
+            "email",
+            "password",
+            "avatar",
+            "banner",
+            "title",
+            "description",
+        ]
+        read_only_fields = ["avatar", "banner", "title", "description"]
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserListSerializer(serializers.ModelSerializer):
     """
     Serializer used to retrieve information about a CustomUser model instance
     """
@@ -31,4 +41,17 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ["id", "name", "email", "avatar"]
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "avatar",
+            "banner",
+            "title",
+            "description",
+            "name",
+            "followers",
+            "following",
+            "posts",
+        ]
