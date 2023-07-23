@@ -1,4 +1,5 @@
 from django.contrib.auth import login
+from django.shortcuts import get_object_or_404
 
 from rest_framework import generics, permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
@@ -143,24 +144,87 @@ class PostLikeDestroyView(generics.DestroyAPIView):
         return PostLike.objects.filter(user=self.request.user)
 
 
-# class CommentListCreateView(generics.ListCreateAPIView):
-#     permission_classes = [permissions.IsAuthenticated]
-#     queryset = None
-#     serializer_class = None
+class CommentListCreateView(generics.ListCreateAPIView):
+    """
+    Function that either CREATES or LIST a Comment model instance
 
-#     def get_serializer_class(self):
-#         if self.request.method == "POST":
-#             return CommentCreationSerializer
-#         return CommentListSerializer
+    Returns:
+        - 200 Ok: with serialized representation of the Comments queryset
+        - 201 Created: with a serialized representation of the Comment object
+        - 400 Bad Request: when raised ValidationError/ValueError
+        - 401 Unauthorized: when failed to provide valid authentication
 
-#     def get_queryset(self):
-#         if self.request.method == "GET":
-#             return Comment
+    Raises:
+        - ValidationError: when request.data provided was invalid
+        - ValueError: when request does not contain "post_id" in query_params
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = None
+    serializer_class = None
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return CommentCreationSerializer
+        return CommentListSerializer
+
+    def get_queryset(self):
+        """
+        View that determines if we return a MainComments queryset or a Replies to a comment queryset
+        """
+        if self.request.method == "GET":
+            # If post_id is given, we want main comments
+            if "post_id" in self.request.query_params:
+                return Comment.objects.filter(
+                    post=self.request.query_params["post_id"], parent__isnull=True
+                )
+
+            # If we provide a "parent_id", then we want replies to that comment
+            if "parent_id" in self.request.query_params:
+                return Comment.objects.filter(
+                    parent=self.request.query_params["parent_id"]
+                )
+            return Comment.objects.none()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
-# class CommentLikeCreateView:
-#     pass
+class CommentLikeCreateView(generics.CreateAPIView):
+    """
+    View that creates a CommentLike model instance
+
+    Returns:
+        - 201 Created: with a serialized representation of the CommentLike object
+        - 400 Bad Request: if ValidationError is raised
+        - 401 Unauthorized: if we failed to provide valid authentication
+
+    Raises:
+        - ValidationError: when request.data provided was invalid
+        - IntegrityError: when trying to like twice
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = CommentLikeSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
-# class CommentLikeDestroyView:
-#     pass
+class CommentLikeDestroyView(generics.DestroyAPIView):
+    """
+    View that destroys a CommentLike model instance
+
+    Returns:
+        - 204 No Content: when object is deleted
+        - 401 Unauthorized: when failed to provide valid authentication
+        - 404 Not Found: when failed to delete object
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = None
+    serializer_class = CommentLikeSerializer
+    lookup_field = "comment"
+
+    def get_queryset(self):
+        return CommentLike.objects.filter(user=self.request.user)

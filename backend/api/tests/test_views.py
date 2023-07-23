@@ -6,7 +6,7 @@ from django.db import IntegrityError
 
 from accounts.models import CustomUser
 
-from feed.models import Post, PostLike
+from feed.models import Post, PostLike, Comment, CommentLike
 
 
 class UserCreationViewTest(APITestCase):
@@ -408,11 +408,10 @@ class PostLikeCreateViewTest(APITestCase):
         PostLike.objects.create(post=self.post, user=self.user)
         data = {"post": self.post.id}
         with self.assertRaises(Exception) as thrown_error:
-            response = self.client.post(
+            self.client.post(
                 self.url, data, format="json", HTTP_AUTHORIZATION=f"Token {self.token}"
             )
         self.assertIsInstance(thrown_error.exception, IntegrityError)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_unauthorized_access(self):
         data = {"post": self.post.id}
@@ -486,6 +485,381 @@ class PostLikeDestroyViewTest(APITestCase):
     def test_unauthorized_access(self):
         response = self.client.delete(
             reverse("post-like-destroy", kwargs={"post": self.post.id}),
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class CommentListCreateViewTest(APITestCase):
+    """
+    Test cases for Comment model instances CREATION or LIST
+
+    Returns:
+        - 200 Ok: with serialized representation of the Comments queryset
+        - 201 Created: with a serialized representation of the Comment object
+        - 400 Bad Request: when raised ValidationError/ValueError
+        - 401 Unauthorized: when failed to provide valid authentication
+    """
+
+    def setUp(self):
+        self.url = reverse("comment-list-create")
+        self.user = CustomUser.objects.create_user(
+            email="testuser@site.com",
+            password="testpass",
+            first_name="Testing",
+            last_name="DRF",
+        )
+        self.token = self.client.post(
+            reverse("login"),
+            {"username": "testuser@site.com", "password": "testpass"},
+            format="json",
+        ).data["token"]
+        self.post = Post.objects.create(
+            user=self.user, title="Post test", content="This is a content"
+        )
+
+    def test_can_list_main_comments(self):
+        # We need some comments
+        Comment.objects.create(
+            post=self.post, user=self.user, content="Hello this is comment #1"
+        )
+        Comment.objects.create(
+            post=self.post, user=self.user, content="Hello this is comment #2"
+        )
+        Comment.objects.create(
+            post=self.post, user=self.user, content="Hello this is comment #3"
+        )
+        Comment.objects.create(
+            post=self.post, user=self.user, content="Hello this is comment #4"
+        )
+
+        response = self.client.get(
+            f"{self.url}?post_id={self.post.id}",
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 4)
+
+    def test_can_list_replies_comment(self):
+        # we need a main comment
+        main_comment = Comment.objects.create(
+            post=self.post, user=self.user, content="Hello this is 1 comment"
+        )
+        # we need replies on this comment
+        Comment.objects.create(
+            post=self.post,
+            user=self.user,
+            content="Hello this is reply #1",
+            parent=main_comment,
+        )
+        Comment.objects.create(
+            post=self.post,
+            user=self.user,
+            content="Hello this is reply #2",
+            parent=main_comment,
+        )
+        Comment.objects.create(
+            post=self.post,
+            user=self.user,
+            content="Hello this is reply #3",
+            parent=main_comment,
+        )
+
+        response = self.client.get(
+            f"{self.url}?parent_id={main_comment.id}",
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # 3 replies
+        self.assertEqual(len(response.data), 3)
+
+    def test_list_no_query_params(self):
+        response = self.client.get(
+            self.url, format="json", HTTP_AUTHORIZATION=f"Token {self.token}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
+
+    def test_can_create_comment_valid_data(self):
+        data = {"post": self.post.id, "content": "This is my first comment"}
+
+        response = self.client.post(
+            self.url, data, format="json", HTTP_AUTHORIZATION=f"Token {self.token}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(len(response.data), 4)
+        self.assertIn("post", response.data)
+        self.assertIn("content", response.data)
+        self.assertIn("parent", response.data)
+        self.assertIn("user", response.data)
+        self.assertIsNone(response.data["parent"])
+
+    def test_can_create_reply_valid_data(self):
+        # Create a comment to reply
+        main_comment = Comment.objects.create(
+            post=self.post, user=self.user, content="Test post"
+        )
+
+        data = {
+            "post": self.post.id,
+            "content": "This is my first reply",
+            "parent": main_comment.id,
+        }
+
+        response = self.client.post(
+            self.url, data, format="json", HTTP_AUTHORIZATION=f"Token {self.token}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(len(response.data), 4)
+        self.assertIn("post", response.data)
+        self.assertIn("content", response.data)
+        self.assertIn("parent", response.data)
+        self.assertIn("user", response.data)
+        self.assertEqual(response.data["parent"], main_comment.id)
+
+    def test_can_not_create_comment_invalid_data(self):
+        # no data
+        invalid_data = {}
+
+        response = self.client.post(
+            self.url,
+            invalid_data,
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(len(response.data), 2)
+        self.assertIn("post", response.data)
+        self.assertIn("content", response.data)
+
+        # no post
+        invalid_data = {"content": "I got no post"}
+
+        response = self.client.post(
+            self.url,
+            invalid_data,
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(len(response.data), 1)
+        self.assertIn("post", response.data)
+
+        # invalid post
+        invalid_data = {"post": "123213", "content": "This post doesnt exist"}
+
+        response = self.client.post(
+            self.url,
+            invalid_data,
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(len(response.data), 1)
+        self.assertIn("post", response.data)
+
+        # no content
+        invalid_data = {"post": self.post.id}
+
+        response = self.client.post(
+            self.url,
+            invalid_data,
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(len(response.data), 1)
+        self.assertIn("content", response.data)
+
+        # wrong parent
+        invalid_data = {
+            "post": self.post.id,
+            "content": "This parent doesnt exist, like mine! huh!",
+            "parent": "12312",
+        }
+
+        response = self.client.post(
+            self.url,
+            invalid_data,
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(len(response.data), 1)
+        self.assertIn("parent", response.data)
+
+    def test_unauthorized_access(self):
+        data = {
+            "post": self.post.id,
+            "content": "we wild dog, we got no permissions",
+        }
+
+        response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class CommentLikeCreateViewTest(APITestCase):
+    """
+    Test cases form CommentLike model CreateView
+
+    Returns:
+        - 201 Created: with a serialized representation of the CommentLike object
+        - 400 Bad Request: if ValidationError is raised
+        - 401 Unauthorized: if we failed to provide valid authentication
+    """
+
+    def setUp(self):
+        self.url = reverse("comment-like-create")
+        self.user = CustomUser.objects.create_user(
+            email="testuser@site.com",
+            password="testpass",
+            first_name="Testing",
+            last_name="DRF",
+        )
+        self.token = self.client.post(
+            reverse("login"),
+            {"username": "testuser@site.com", "password": "testpass"},
+            format="json",
+        ).data["token"]
+        self.post = Post.objects.create(
+            user=self.user, title="Post test", content="This is a content"
+        )
+        self.comment = Comment.objects.create(
+            post=self.post, user=self.user, content="This is a comment"
+        )
+
+    def test_can_like_comment_valid_data(self):
+        data = {"comment": self.comment.id}
+
+        response = self.client.post(
+            self.url, data, format="json", HTTP_AUTHORIZATION=f"Token {self.token}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["comment"], self.comment.id)
+        self.assertEqual(response.data["user"]["id"], self.user.id)
+
+    def test_can_not_like_comment_invalid_data(self):
+        # no comment
+        invalid_data = {}
+
+        response = self.client.post(
+            self.url,
+            invalid_data,
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(len(response.data), 1)
+        self.assertIn("comment", response.data)
+
+        # comment does not exists
+        invalid_data = {"comment": "idunkown"}
+
+        response = self.client.post(
+            self.url,
+            invalid_data,
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(len(response.data), 1)
+        self.assertIn("comment", response.data)
+
+        # integrity error
+        # We like object
+        CommentLike.objects.create(comment=self.comment, user=self.user)
+        invalid_data = {"comment": self.comment.id}
+
+        with self.assertRaises(Exception) as thrown_exception:
+            self.client.post(
+                self.url,
+                invalid_data,
+                format="json",
+                HTTP_AUTHORIZATION=f"Token {self.token}",
+            )
+
+        self.assertIsInstance(thrown_exception.exception, IntegrityError)
+
+    def test_unauthorized_access(self):
+        data = {"comment": self.comment.id}
+        response = self.client.post(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class CommentLikeDestroyViewTest(APITestCase):
+    """
+    Test cases for CommentLike DestroyView
+
+    Returns:
+        - 204 No Content: when object is deleted
+        - 401 Unauthorized: when failed to provide valid authentication
+        - 404 Not Found: when failed to delete object
+    """
+
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            email="testuser@site.com",
+            password="testpass",
+            first_name="Testing",
+            last_name="DRF",
+        )
+        self.another_user = CustomUser.objects.create_user(
+            email="testuser1@site.com",
+            password="testpass",
+            first_name="Testing",
+            last_name="DRF",
+        )
+        self.token = self.client.post(
+            reverse("login"),
+            {"username": "testuser@site.com", "password": "testpass"},
+            format="json",
+        ).data["token"]
+        self.post = Post.objects.create(
+            user=self.user, title="Post test", content="This is a content"
+        )
+        self.comment = Comment.objects.create(
+            post=self.post, user=self.user, content="This is a comment"
+        )
+
+    def test_can_delete_comment_like(self):
+        # Must be a comment like to delete
+        CommentLike.objects.create(comment=self.comment, user=self.user)
+
+        response = self.client.delete(
+            reverse("comment-like-destroy", kwargs={"comment": self.comment.id}),
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_can_not_delete_comment_like(self):
+        # Must be a comment like to delete
+        CommentLike.objects.create(comment=self.comment, user=self.another_user)
+
+        # wrong comment id
+        response = self.client.delete(
+            reverse("comment-like-destroy", kwargs={"comment": "wrongid"}),
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        # not owner
+        response = self.client.delete(
+            reverse("comment-like-destroy", kwargs={"comment": self.comment.id}),
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(CommentLike.objects.count(), 1)
+
+    def test_unauthorized_access(self):
+        response = self.client.delete(
+            reverse("comment-like-destroy", kwargs={"comment": "wrongid"}),
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
