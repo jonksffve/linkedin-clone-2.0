@@ -6,11 +6,11 @@ import Spinner from '@/components/UI/Spinner';
 
 const FeedPage = () => {
 	return (
-		<div className='flex flex-row gap-4 h-full relative'>
-			<div className='w-1/4 '>
+		<div className='flex space-x-4'>
+			<div className='w-1/4 p-2 sticky top-0 left-0 h-screen'>
 				<ProfileSummary />
 			</div>
-			<div className='w-2/4 overflow-auto relative'>
+			<div className='w-1/2 p-2 mx-auto'>
 				<div className='p-2'>
 					<PostCreation />
 					<Spinner />
@@ -22,7 +22,7 @@ const FeedPage = () => {
 					<PostContent /> */}
 				</div>
 			</div>
-			<div className='w-1/4'>
+			<div className='w-1/4 p-2 sticky top-0 right-0 h-screen'>
 				<ConnectionsSummary />
 			</div>
 		</div>
