@@ -7,6 +7,8 @@ class UserCreationSerializer(serializers.ModelSerializer):
     Serializer used for creation of CustomUser model instances
     """
 
+    password = serializers.CharField(write_only=True)
+
     def create(self, validated_data):
         """
         Create a custom user object and properly hash the password
@@ -21,12 +23,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
             "last_name",
             "email",
             "password",
-            "avatar",
-            "banner",
-            "title",
-            "description",
         ]
-        read_only_fields = ["avatar", "banner", "title", "description"]
 
 
 class UserListSerializer(serializers.ModelSerializer):
