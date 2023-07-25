@@ -3,6 +3,7 @@ import Navbar from '@components/Navigation/Navbar';
 import RegisterModal from '@components/Modals/RegisterModal';
 import LoginModal from '@components/Modals/LoginModal';
 import useAuthStatus from '@/hooks/use-AuthStatus';
+import UploadModal from '@/components/Modals/UploadModal';
 
 const RootLayout = () => {
 	useAuthStatus();
@@ -15,6 +16,7 @@ const RootLayout = () => {
 			</main>
 			<RegisterModal />
 			<LoginModal />
+			<UploadModal />
 		</div>
 	);
 };
