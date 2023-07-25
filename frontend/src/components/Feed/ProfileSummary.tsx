@@ -1,8 +1,8 @@
 import { ROUTE_INDEX } from '@/helpers/routes';
-import CardContainer from '../UI/CardContainer';
+import CardContainer from '../CardContainer';
 import bannerLogo from '@assets/banner-placeholder.jpg';
 import { Link } from 'react-router-dom';
-import Button from '../UI/HTMLelements/Buttons/Button';
+import Button from '../HTMLelements/Buttons/Button';
 import { useAppSelector } from '@/store/hooks';
 
 const ProfileSummary = () => {

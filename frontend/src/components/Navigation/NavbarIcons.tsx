@@ -9,7 +9,7 @@ import {
 	ROUTE_FEED,
 	ROUTE_JOBS,
 	ROUTE_NOTIFICATIONS,
-} from '../../../helpers/routes';
+} from '../../helpers/routes';
 
 const NavbarIcons = () => {
 	return (

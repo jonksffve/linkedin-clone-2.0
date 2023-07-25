@@ -1,6 +1,6 @@
-import CardContainer from '../UI/CardContainer';
+import CardContainer from '../CardContainer';
 import logoUser from '@assets/user-placeholder.jpeg';
-import Button from '../UI/HTMLelements/Buttons/Button';
+import Button from '../HTMLelements/Buttons/Button';
 import { AiOutlineArrowRight, AiOutlinePlus } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { ROUTE_INDEX } from '@/helpers/routes';

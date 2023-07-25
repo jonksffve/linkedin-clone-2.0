@@ -1,5 +1,5 @@
 import { useAppSelector } from '@/store/hooks';
-import Button from '../UI/HTMLelements/Buttons/Button';
+import Button from '../HTMLelements/Buttons/Button';
 import { BsCalendarEvent, BsFileImage } from 'react-icons/bs';
 import { TfiCommentAlt } from 'react-icons/tfi';
 
