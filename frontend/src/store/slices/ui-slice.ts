@@ -3,11 +3,13 @@ import { createSlice } from '@reduxjs/toolkit';
 interface UiState {
 	showRegisterModal: boolean;
 	showLoginModal: boolean;
+	showUploadModal: boolean;
 }
 
 const initialState: UiState = {
 	showRegisterModal: false,
 	showLoginModal: false,
+	showUploadModal: false,
 };
 
 const uiSlice = createSlice({
@@ -25,6 +27,12 @@ const uiSlice = createSlice({
 		},
 		onCloseLoginModal: (state) => {
 			state.showLoginModal = false;
+		},
+		onShowUploadModal: (state) => {
+			state.showUploadModal = true;
+		},
+		onCloseUploadModal: (state) => {
+			state.showUploadModal = false;
 		},
 	},
 });
