@@ -39,12 +39,9 @@ class UserCreationViewTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(CustomUser.objects.count(), 2)
-        self.assertEqual(len(response.data), 8)
+        self.assertEqual(len(response.data), 3)
         self.assertEqual(response.data["email"], "test@example.com")
-        # password needs to be hashed
-        self.assertNotEqual(response.data["password"], "testpassword")
-        self.assertIsNotNone(response.data["avatar"])
-        self.assertIsNotNone(response.data["banner"])
+        self.assertNotIn("password", response.data)
 
     def test_create_user_invalid_data(self):
         # Test case where invalid data causes a ValidationError (no data)
