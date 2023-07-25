@@ -6,11 +6,9 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 
 from feed.models import Post, PostLike, Comment, CommentLike
 from feed.serializers import (
-    PostCreationSerializer,
-    PostListSerializer,
+    PostSerializer,
     PostLikeSerializer,
-    CommentCreationSerializer,
-    CommentListSerializer,
+    CommentSerializer,
     CommentLikeSerializer,
 )
 from accounts.serializers import UserCreationSerializer, UserListSerializer
@@ -92,12 +90,7 @@ class PostListCreateView(generics.ListCreateAPIView):
 
     permission_classes = [permissions.IsAuthenticated]
     queryset = Post.objects.all()
-    serializer_class = None
-
-    def get_serializer_class(self):
-        if self.request.method == "POST":
-            return PostCreationSerializer
-        return PostListSerializer
+    serializer_class = PostSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -161,12 +154,7 @@ class CommentListCreateView(generics.ListCreateAPIView):
 
     permission_classes = [permissions.IsAuthenticated]
     queryset = None
-    serializer_class = None
-
-    def get_serializer_class(self):
-        if self.request.method == "POST":
-            return CommentCreationSerializer
-        return CommentListSerializer
+    serializer_class = CommentSerializer
 
     def get_queryset(self):
         """
