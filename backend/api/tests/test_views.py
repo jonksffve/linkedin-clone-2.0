@@ -275,12 +275,15 @@ class PostListCreateViewTest(APITestCase):
             HTTP_AUTHORIZATION=f"Token {self.token}",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(len(response.data), 5)
+        self.assertEqual(len(response.data), 7)
+        self.assertIn("id", response.data)
         self.assertIn("user", response.data)
         self.assertIn("title", response.data)
         self.assertIn("content", response.data)
+        self.assertIn("date_created", response.data)
         self.assertIn("image", response.data)
         self.assertIn("video", response.data)
+        self.assertIsNotNone(response.data["date_created"])
 
     def test_can_not_create_post_invalid_data(self):
         # no data
@@ -590,11 +593,14 @@ class CommentListCreateViewTest(APITestCase):
             self.url, data, format="json", HTTP_AUTHORIZATION=f"Token {self.token}"
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(len(response.data), 4)
+        self.assertEqual(len(response.data), 7)
+        self.assertIn("id", response.data)
         self.assertIn("post", response.data)
-        self.assertIn("content", response.data)
-        self.assertIn("parent", response.data)
         self.assertIn("user", response.data)
+        self.assertIn("content", response.data)
+        self.assertIsNotNone("date_created", response.data)
+        self.assertIn("parent", response.data)
+        self.assertIn("replies_count", response.data)
         self.assertIsNone(response.data["parent"])
 
     def test_can_create_reply_valid_data(self):
@@ -613,11 +619,14 @@ class CommentListCreateViewTest(APITestCase):
             self.url, data, format="json", HTTP_AUTHORIZATION=f"Token {self.token}"
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(len(response.data), 4)
+        self.assertEqual(len(response.data), 7)
+        self.assertIn("id", response.data)
         self.assertIn("post", response.data)
-        self.assertIn("content", response.data)
-        self.assertIn("parent", response.data)
         self.assertIn("user", response.data)
+        self.assertIn("content", response.data)
+        self.assertIsNotNone("date_created", response.data)
+        self.assertIn("parent", response.data)
+        self.assertIn("replies_count", response.data)
         self.assertEqual(response.data["parent"], main_comment.id)
 
     def test_can_not_create_comment_invalid_data(self):
