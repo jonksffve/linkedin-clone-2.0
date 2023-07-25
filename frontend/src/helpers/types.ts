@@ -1,3 +1,4 @@
+//FORMS
 export interface LoginFormInputs {
 	username: string;
 	password: string;
@@ -11,6 +12,11 @@ export interface RegisterFormInputs {
 	avatar: File | undefined;
 }
 
+export interface CreatePostFormInputs {
+	content: string;
+	file: File | undefined;
+}
+
 export interface UserState {
 	token: string;
 	name: string;
@@ -21,9 +27,17 @@ export interface UserState {
 
 export interface UserResponse {
 	id: number;
-	avatar: string;
+	first_name: string;
+	last_name: string;
 	email: string;
+	avatar: string | undefined;
+	banner: string | undefined;
+	title: string | undefined;
+	description: string | undefined;
 	name: string;
+	followers: number;
+	following: number;
+	posts: number;
 }
 
 export interface TokenResponse {
@@ -34,4 +48,14 @@ export interface TokenResponse {
 export interface ErrorResponse {
 	key: string;
 	value: string;
+}
+
+export interface Post {
+	id: string;
+	user: UserResponse;
+	title: string;
+	content: string;
+	date_created: string;
+	image: string | undefined;
+	video: string | undefined;
 }
