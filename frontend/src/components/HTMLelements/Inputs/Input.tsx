@@ -41,7 +41,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 					/>
 					{Icon && (
 						<Icon
-							className='absolute left-1'
+							className='absolute left-1 text-neutral-400'
 							size={20}
 						/>
 					)}
