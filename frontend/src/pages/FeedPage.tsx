@@ -1,10 +1,24 @@
+import { getPosts } from '@/api/feed';
 import ConnectionsSummary from '@/components/Feed/ConnectionsSummary';
 import PostContent from '@/components/Feed/PostContent';
 import PostCreation from '@/components/Feed/PostCreation';
 import ProfileSummary from '@/components/Feed/ProfileSummary';
-import Spinner from '@/components/UI/Spinner';
+import Spinner from '@/components/Spinner';
+import { Post } from '@/helpers/types';
+import { useAppSelector } from '@/store/hooks';
+import { useState, useEffect } from 'react';
 
 const FeedPage = () => {
+	const [posts, setPosts] = useState<Post[]>([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const userState = useAppSelector((state) => state.user);
+
+	useEffect(() => {
+		if (!userState.token) return;
+
+		void getPosts(userState.token, setPosts, setIsLoading);
+	}, [userState.token]);
+
 	return (
 		<div className='flex space-x-4'>
 			<div className='w-1/4 p-2 sticky top-0 left-0 h-screen'>
@@ -13,13 +27,19 @@ const FeedPage = () => {
 			<div className='w-1/2 p-2 mx-auto'>
 				<div className='p-2'>
 					<PostCreation />
-					<Spinner />
-					{/* <PostContent />
-					<PostContent />
-					<PostContent />
-					<PostContent />
-					<PostContent />
-					<PostContent /> */}
+					{isLoading && <Spinner />}
+					{posts.length === 0 && (
+						<div className='p-2 text-center mt-4'>
+							<p>No posts have been found!</p>
+						</div>
+					)}
+					{posts.length > 0 &&
+						posts.map((post) => (
+							<PostContent
+								key={post.id}
+								post={post}
+							/>
+						))}
 				</div>
 			</div>
 			<div className='w-1/4 p-2 sticky top-0 right-0 h-screen'>
