@@ -3,6 +3,9 @@ import { toastConfig } from '@/helpers/toastifyConfig';
 import { CreatePostFormInputs, Post } from '@/helpers/types';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { UseFormReset } from 'react-hook-form';
+import { uiActions } from '@/store/slices/ui-slice';
+import { Dispatch } from '@reduxjs/toolkit';
 
 export const getPosts = async (
 	token: string,
@@ -24,16 +27,29 @@ export const getPosts = async (
 	}
 };
 
-export const createPost = async (token: string, data: CreatePostFormInputs) => {
+export const createPost = async (
+	token: string,
+	data: CreatePostFormInputs,
+	setIsLoading: (val: boolean) => void,
+	onAction: React.Dispatch<React.SetStateAction<Post[]>>,
+	reset: UseFormReset<CreatePostFormInputs>,
+	dispatch: Dispatch
+) => {
 	try {
-		await axios.post(ENDPOINT_POST, data, {
+		setIsLoading(true);
+		const response = await axios.post(ENDPOINT_POST, data, {
 			headers: {
 				Authorization: `Token ${token}`,
 				'Content-Type': 'multipart/form-data',
 			},
 		});
+		const new_post = response.data as Post;
+		onAction((prevState: Post[]) => [new_post, ...prevState]);
+		reset();
+		dispatch(uiActions.onCloseUploadModal());
 	} catch (error) {
-		console.log(error);
 		toast.error('Something happened', toastConfig);
+	} finally {
+		setIsLoading(false);
 	}
 };
