@@ -10,7 +10,6 @@ class Post(models.Model):
         related_name="posts",
         on_delete=models.CASCADE,
     )
-    title = models.CharField(_("title"), max_length=50)
     content = models.TextField(_("content"))
     date_created = models.DateTimeField(
         _("date created"), auto_now=False, auto_now_add=True
@@ -26,7 +25,7 @@ class Post(models.Model):
         ordering = ["-date_created"]
 
     def __str__(self):
-        return f"{self.user} posted: {self.title} - {self.date_created}"
+        return f"{self.user} posted - {self.date_created}"
 
 
 class Comment(models.Model):
