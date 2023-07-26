@@ -7,6 +7,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
     Serializer used for creation of CustomUser model instances
     """
 
+    avatar = serializers.ImageField(required=False, allow_empty_file=True)
     password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
@@ -18,12 +19,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = [
-            "first_name",
-            "last_name",
-            "email",
-            "password",
-        ]
+        fields = ["first_name", "last_name", "email", "password", "avatar"]
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -45,7 +41,6 @@ class UserListSerializer(serializers.ModelSerializer):
             "email",
             "avatar",
             "banner",
-            "title",
             "description",
             "name",
             "followers",
