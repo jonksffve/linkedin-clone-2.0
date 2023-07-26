@@ -18,14 +18,13 @@ class PostModelTest(TestCase):
 
         # Create a test Post without file
         cls.post = Post.objects.create(
-            user=cls.user, title="Test post", content="This is just content for testing"
+            user=cls.user, content="This is just content for testing"
         )
 
     def test_can_create_post_with_file(self):
         with open("media/test_files/nerdy.jpg", "rb") as file:
             post = Post.objects.create(
                 user=self.user,
-                title="Post with Image",
                 content="This post contains an image.",
                 file=SimpleUploadedFile(file.name, file.read()),
             )
@@ -35,16 +34,13 @@ class PostModelTest(TestCase):
     def test_post_model_fields(self):
         # Test the fields of the Post model created without file
         self.assertEqual(self.post.user, self.user)
-        self.assertEqual(self.post.title, "Test post")
         self.assertEqual(self.post.content, "This is just content for testing")
         self.assertIsNotNone(self.post.date_created)
         self.assertEqual(self.post.file, None)
 
     def test_post_model_str_representation(self):
         # Test the string representation of the Post model
-        expected_str = (
-            f"{self.user} posted: {self.post.title} - {self.post.date_created}"
-        )
+        expected_str = f"{self.user} posted - {self.post.date_created}"
         self.assertEqual(str(self.post), expected_str)
 
     # post likes
@@ -69,9 +65,7 @@ class CommentModelTest(TestCase):
         )
 
         # post
-        cls.post = Post.objects.create(
-            user=cls.user, title="Post title", content="This is just a test"
-        )
+        cls.post = Post.objects.create(user=cls.user, content="This is just a test")
 
         # Comment
         cls.comment = Comment.objects.create(
@@ -134,9 +128,7 @@ class PostLikeModelTest(TestCase):
         )
 
         # post
-        cls.post = Post.objects.create(
-            user=cls.user, title="Test post", content="Test content"
-        )
+        cls.post = Post.objects.create(user=cls.user, content="Test content")
 
         # Like instance
         cls.post_like = PostLike.objects.create(post=cls.post, user=cls.user)
@@ -175,9 +167,7 @@ class CommentLikeModelTest(TestCase):
             last_name="Django",
         )
 
-        cls.post = Post.objects.create(
-            user=cls.user, title="Test post", content="Test content"
-        )
+        cls.post = Post.objects.create(user=cls.user, content="Test content")
 
         cls.comment = Comment.objects.create(
             post=cls.post, user=cls.user, content="Test content"
