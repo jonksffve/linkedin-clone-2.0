@@ -3,6 +3,7 @@ import ConnectionsSummary from '@/components/Feed/ConnectionsSummary';
 import PostContent from '@/components/Feed/PostContent';
 import PostCreation from '@/components/Feed/PostCreation';
 import ProfileSummary from '@/components/Feed/ProfileSummary';
+import UploadModal from '@/components/Modals/UploadModal';
 import Spinner from '@/components/Spinner';
 import { Post } from '@/helpers/types';
 import { useAppSelector } from '@/store/hooks';
@@ -20,32 +21,35 @@ const FeedPage = () => {
 	}, [userState.token]);
 
 	return (
-		<div className='flex space-x-4'>
-			<div className='w-1/4 p-2 sticky top-0 left-0 h-screen'>
-				<ProfileSummary />
-			</div>
-			<div className='w-1/2 p-2 mx-auto'>
-				<div className='p-2'>
-					<PostCreation />
-					{isLoading && <Spinner />}
-					{posts.length === 0 && (
-						<div className='p-2 text-center mt-4'>
-							<p>No posts have been found!</p>
-						</div>
-					)}
-					{posts.length > 0 &&
-						posts.map((post) => (
-							<PostContent
-								key={post.id}
-								post={post}
-							/>
-						))}
+		<>
+			<div className='flex space-x-4'>
+				<div className='w-1/4 p-2 sticky top-0 left-0 h-screen'>
+					<ProfileSummary />
+				</div>
+				<div className='w-1/2 p-2 mx-auto'>
+					<div className='p-2'>
+						<PostCreation />
+						{isLoading && <Spinner />}
+						{posts.length === 0 && (
+							<div className='p-2 text-center mt-4'>
+								<p>No posts have been found!</p>
+							</div>
+						)}
+						{posts.length > 0 &&
+							posts.map((post) => (
+								<PostContent
+									key={post.id}
+									post={post}
+								/>
+							))}
+					</div>
+				</div>
+				<div className='w-1/4 p-2 sticky top-0 right-0 h-screen'>
+					<ConnectionsSummary />
 				</div>
 			</div>
-			<div className='w-1/4 p-2 sticky top-0 right-0 h-screen'>
-				<ConnectionsSummary />
-			</div>
-		</div>
+			<UploadModal onAction={setPosts} />
+		</>
 	);
 };
 
