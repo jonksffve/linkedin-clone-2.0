@@ -41,6 +41,7 @@ class UserListSerializer(serializers.ModelSerializer):
             "email",
             "avatar",
             "banner",
+            "title",
             "description",
             "name",
             "followers",

@@ -72,7 +72,6 @@ class UserCreationViewTest(APITestCase):
             "email": "test@user.com",
             "password": "1234567",
         }
-
         response = self.client.post(self.url, invalid_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(len(response.data), 1)
@@ -200,15 +199,17 @@ class UserRetrieveViewTest(APITestCase):
         self.assertEqual(response.data["first_name"], self.user.first_name)
         self.assertEqual(response.data["last_name"], self.user.last_name)
         self.assertEqual(response.data["email"], self.user.email)
+        self.assertEqual(response.data["title"], "")
         self.assertEqual(response.data["description"], "")
         self.assertEqual(response.data["name"], self.user.get_full_name())
-        self.assertEqual(len(response.data), 11)
+        self.assertEqual(len(response.data), 12)
         self.assertIn("id", response.data)
         self.assertIn("first_name", response.data)
         self.assertIn("last_name", response.data)
         self.assertIn("email", response.data)
         self.assertIn("avatar", response.data)
         self.assertIn("banner", response.data)
+        self.assertIn("title", response.data)
         self.assertIn("description", response.data)
         self.assertIn("name", response.data)
         self.assertIn("followers", response.data)
