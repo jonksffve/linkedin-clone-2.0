@@ -8,6 +8,7 @@ import { FaUserFriends } from 'react-icons/fa';
 import { Post } from '@/helpers/types';
 import CommentBox from './CommentBox';
 import { useState, useCallback } from 'react';
+import { getFileExtension } from '@/helpers/getFileExtension';
 
 interface PostContentProps {
 	post: Post;
@@ -19,6 +20,8 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
 	const toggleCommentBox = useCallback(() => {
 		setShowCommentBox(!showCommentBox);
 	}, [showCommentBox]);
+
+	const fileType = getFileExtension(post.file);
 
 	return (
 		<CardContainer>
@@ -50,18 +53,26 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
 				</div>
 			</div>
 			<div className='border border-neutral-300 rounded-md flex flex-col gap-2'>
-				{post.image && (
+				{post.file && (
 					<>
-						<img
-							className='min-h-[450px] max-h-[450px] w-full object-contain'
-							src={post.image}
-							alt=''
-						/>
+						{fileType === 'image' && (
+							<img
+								className='min-h-[450px] max-h-[450px] w-full object-contain'
+								src={post.file}
+								alt=''
+							/>
+						)}
+						{fileType === 'video' && (
+							<video
+								className='min-h-[450px] max-h-[450px] w-full object-contain'
+								src={post.file}
+								controls
+							/>
+						)}
 						<hr />
 					</>
 				)}
 				<div className='p-2'>
-					<p className='font-semibold'>{post.title}</p>
 					<p className='p-2'>{post.content}</p>
 				</div>
 			</div>
