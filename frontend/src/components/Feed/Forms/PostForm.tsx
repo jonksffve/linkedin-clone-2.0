@@ -28,7 +28,7 @@ const PostForm = () => {
 			/>
 			<div className='w-full min-h-[150px] border-2 border-neutral-300 border-dashed rounded-md relative'>
 				<label
-					htmlFor='fileUpload'
+					htmlFor='file'
 					className='w-full h-full hover:cursor-pointer hover:bg-neutral-400 absolute flex items-center justify-center'
 				>
 					<div className='flex flex-col gap-1 items-center'>
@@ -38,8 +38,9 @@ const PostForm = () => {
 					</div>
 				</label>
 				<input
-					id='fileUpload'
+					id='file'
 					type='file'
+					accept='image/*, video/*'
 					{...(register('file'), { required: false })}
 					hidden
 				/>

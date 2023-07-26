@@ -1,16 +1,38 @@
 from rest_framework import serializers
 from .models import Post, PostLike, Comment, CommentLike
 from accounts.serializers import UserListSerializer
+import magic
 
 
 class PostSerializer(serializers.ModelSerializer):
     user = UserListSerializer(read_only=True)
-    image = serializers.ImageField(allow_empty_file=True, required=False, default=None)
-    video = serializers.FileField(allow_empty_file=True, required=False, default=None)
+    file = serializers.FileField(allow_empty_file=True, required=False, default=None)
+
+    def validate_file(self, value):
+        if not value:
+            return
+
+        valid_mime_types = [
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/bmp",
+            "video/avi",
+            "video/mp4",
+            "video/x-matroska",
+            "video/quicktime",
+        ]
+        mime_type = magic.from_buffer(value.read(), mime=True)
+        if mime_type not in valid_mime_types:
+            raise serializers.ValidationError(
+                "Invalid file type. Only images and videos are allowed."
+            )
+
+        return value
 
     class Meta:
         model = Post
-        fields = ["id", "user", "title", "content", "date_created", "image", "video"]
+        fields = ["id", "user", "title", "content", "date_created", "file"]
 
 
 class CommentSerializer(serializers.ModelSerializer):
