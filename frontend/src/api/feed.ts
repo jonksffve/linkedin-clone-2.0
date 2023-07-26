@@ -1,6 +1,6 @@
-import { ENDPOINT_GET_POSTS } from '@/helpers/routes';
+import { ENDPOINT_POST } from '@/helpers/routes';
 import { toastConfig } from '@/helpers/toastifyConfig';
-import { Post } from '@/helpers/types';
+import { CreatePostFormInputs, Post } from '@/helpers/types';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -11,7 +11,7 @@ export const getPosts = async (
 ) => {
 	try {
 		setIsLoading(true);
-		const response = await axios.get(ENDPOINT_GET_POSTS, {
+		const response = await axios.get(ENDPOINT_POST, {
 			headers: {
 				Authorization: `Token ${token}`,
 			},
@@ -21,5 +21,19 @@ export const getPosts = async (
 		toast.error('Something happened fetching data', toastConfig);
 	} finally {
 		setIsLoading(false);
+	}
+};
+
+export const createPost = async (token: string, data: CreatePostFormInputs) => {
+	try {
+		await axios.post(ENDPOINT_POST, data, {
+			headers: {
+				Authorization: `Token ${token}`,
+				'Content-Type': 'multipart/form-data',
+			},
+		});
+	} catch (error) {
+		console.log(error);
+		toast.error('Something happened', toastConfig);
 	}
 };
