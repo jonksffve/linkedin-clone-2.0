@@ -15,13 +15,15 @@ class Post(models.Model):
     date_created = models.DateTimeField(
         _("date created"), auto_now=False, auto_now_add=True
     )
-    image = models.ImageField(
-        _("image"),
-        upload_to="post/image/",
-        blank=True,
+    file = models.FileField(
+        _("file uploaded"),
+        upload_to="post/",
         null=True,
+        blank=True,
     )
-    video = models.FileField(_("video"), upload_to="post/video/", null=True, blank=True)
+
+    class Meta:
+        ordering = ["-date_created"]
 
     def __str__(self):
         return f"{self.user} posted: {self.title} - {self.date_created}"
