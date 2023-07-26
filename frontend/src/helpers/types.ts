@@ -53,9 +53,7 @@ export interface ErrorResponse {
 export interface Post {
 	id: string;
 	user: UserResponse;
-	title: string;
 	content: string;
 	date_created: string;
-	image: string | undefined;
-	video: string | undefined;
+	file: string | undefined;
 }
