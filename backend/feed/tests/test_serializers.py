@@ -1,7 +1,11 @@
+import os
+
 from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from accounts.models import CustomUser
 from accounts.serializers import UserListSerializer
+
 
 from ..models import Post, Comment, PostLike, CommentLike
 from ..serializers import (
@@ -25,11 +29,6 @@ class TestPostSerializer(TestCase):
             user=self.user, title="Raw object", content="Raw object's content"
         )
 
-        self.expected_valid_data = {
-            "title": "Post test",
-            "content": "Post test content",
-        }
-
     def test_post_serialization(self):
         serializer = PostSerializer(instance=self.raw_post)
 
@@ -37,7 +36,7 @@ class TestPostSerializer(TestCase):
         serialized_data = serializer.data
 
         # check fields in the serializer
-        self.assertEqual(len(serialized_data), 7)
+        self.assertEqual(len(serialized_data), 6)
         self.assertEqual(serialized_data["id"], self.raw_post.id)
         self.assertEqual(serialized_data["user"]["id"], self.raw_post.user.id)
         self.assertEqual(serialized_data["title"], self.raw_post.title)
@@ -45,8 +44,7 @@ class TestPostSerializer(TestCase):
         self.assertIsNotNone(serialized_data["date_created"])
 
         # image, video read_only should not be included (if not given)
-        self.assertIsNone(serialized_data["video"])
-        self.assertIsNone(serialized_data["image"])
+        self.assertIsNone(serialized_data["file"])
 
     def test_post_serialization_multiple(self):
         # Create multiple test posts
@@ -78,20 +76,38 @@ class TestPostSerializer(TestCase):
 
         self.assertEqual(serialized_data["user"], user_serializer.data)
 
-    def test_post_deserialization_valid_data(self):
-        serializer = PostSerializer(data=self.expected_valid_data)
+    def test_post_deserialization_valid_data_with_file(self):
+        with open("media/test_files/nerdy.jpg", "rb") as file:
+            valid_data = {
+                "title": "This is a title",
+                "content": "This is a content",
+                "file": SimpleUploadedFile(file.name, file.read()),
+            }
+
+            serializer = PostSerializer(data=valid_data)
+            self.assertTrue(serializer.is_valid())
+            post_instance = serializer.save(user=self.user)
+            self.assertIsInstance(post_instance, Post)
+            self.assertEqual(post_instance.title, valid_data["title"])
+            self.assertEqual(post_instance.content, valid_data["content"])
+            self.assertEqual(post_instance.user.id, self.user.id)
+            self.assertIsNotNone(post_instance.date_created)
+            self.assertIsNotNone(post_instance.file)
+
+    def test_post_deserialization_valid_data_without_file(self):
+        valid_data = {"title": "This is a title", "content": "This is a content"}
+        serializer = PostSerializer(data=valid_data)
 
         self.assertTrue(serializer.is_valid())
 
         post_instance = serializer.save(user=self.user)
 
         self.assertIsInstance(post_instance, Post)
-        self.assertEqual(post_instance.title, "Post test")
-        self.assertEqual(post_instance.content, "Post test content")
+        self.assertEqual(post_instance.title, valid_data["title"])
+        self.assertEqual(post_instance.content, valid_data["content"])
         self.assertEqual(post_instance.user.id, self.user.id)
         self.assertIsNotNone(post_instance.date_created)
-        self.assertEqual(post_instance.image, None)
-        self.assertEqual(post_instance.video, None)
+        self.assertEqual(post_instance.file, None)
 
     def test_post_deserialization_invalid_data(self):
         # no data
@@ -118,6 +134,26 @@ class TestPostSerializer(TestCase):
         self.assertFalse(serializer.is_valid())
         self.assertEqual(len(serializer.errors), 1)
         self.assertIn("content", serializer.errors)
+
+        # wrong content type (Field level validation)
+        invalid_files = [
+            "media/test_files/wrong.txt",
+            "media/test_files/document.pdf",
+            "media/test_files/audio.mp3",
+        ]
+
+        for path in invalid_files:
+            with open(path, "rb") as file:
+                data = {
+                    "title": "Post with Image",
+                    "content": "This post contains an image.",
+                    "file": SimpleUploadedFile(file.name, file.read()),
+                }
+
+                serializer = PostSerializer(data=data)
+                self.assertFalse(serializer.is_valid())
+                self.assertEqual(len(serializer.errors), 1)
+                self.assertIn("file", serializer.errors)
 
 
 class TestCommentSerializer(TestCase):

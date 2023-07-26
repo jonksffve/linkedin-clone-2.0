@@ -2,6 +2,7 @@ from django.test import TestCase
 from accounts.models import CustomUser
 from feed.models import Post, Comment, PostLike, CommentLike
 from django.db import IntegrityError
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 
 class PostModelTest(TestCase):
@@ -15,22 +16,29 @@ class PostModelTest(TestCase):
             password="testpassword",
         )
 
-        # Create a test Post
+        # Create a test Post without file
         cls.post = Post.objects.create(
             user=cls.user, title="Test post", content="This is just content for testing"
         )
 
+    def test_can_create_post_with_file(self):
+        with open("media/test_files/nerdy.jpg", "rb") as file:
+            post = Post.objects.create(
+                user=self.user,
+                title="Post with Image",
+                content="This post contains an image.",
+                file=SimpleUploadedFile(file.name, file.read()),
+            )
+
+        self.assertIsNotNone(post.file)
+
     def test_post_model_fields(self):
-        # Test the fields of the Post model
+        # Test the fields of the Post model created without file
         self.assertEqual(self.post.user, self.user)
         self.assertEqual(self.post.title, "Test post")
         self.assertEqual(self.post.content, "This is just content for testing")
-        self.assertEqual(self.post.image, None)
-        self.assertEqual(self.post.video, None)
-
-    def test_post_model_date_created(self):
-        # Test the date_created field is auto-generated correctly
         self.assertIsNotNone(self.post.date_created)
+        self.assertEqual(self.post.file, None)
 
     def test_post_model_str_representation(self):
         # Test the string representation of the Post model
