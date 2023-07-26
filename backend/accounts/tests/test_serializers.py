@@ -64,14 +64,13 @@ class TestUserListSerializer(TestCase):
         serialized_data = serializer.data
 
         # all the fields
-        self.assertTrue(len(serialized_data), 12)
+        self.assertTrue(len(serialized_data), 11)
         self.assertIn("id", serialized_data)
         self.assertIn("first_name", serialized_data)
         self.assertIn("last_name", serialized_data)
         self.assertIn("email", serialized_data)
         self.assertIn("avatar", serialized_data)
         self.assertIn("banner", serialized_data)
-        self.assertIn("title", serialized_data)
         self.assertIn("description", serialized_data)
         self.assertIn("name", serialized_data)
         self.assertIn("followers", serialized_data)

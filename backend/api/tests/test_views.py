@@ -39,7 +39,7 @@ class UserCreationViewTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(CustomUser.objects.count(), 2)
-        self.assertEqual(len(response.data), 3)
+        self.assertEqual(len(response.data), 4)
         self.assertEqual(response.data["email"], "test@example.com")
         self.assertNotIn("password", response.data)
 
@@ -72,6 +72,7 @@ class UserCreationViewTest(APITestCase):
             "email": "test@user.com",
             "password": "1234567",
         }
+
         response = self.client.post(self.url, invalid_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(len(response.data), 1)
@@ -199,17 +200,15 @@ class UserRetrieveViewTest(APITestCase):
         self.assertEqual(response.data["first_name"], self.user.first_name)
         self.assertEqual(response.data["last_name"], self.user.last_name)
         self.assertEqual(response.data["email"], self.user.email)
-        self.assertEqual(response.data["title"], "")
         self.assertEqual(response.data["description"], "")
         self.assertEqual(response.data["name"], self.user.get_full_name())
-        self.assertEqual(len(response.data), 12)
+        self.assertEqual(len(response.data), 11)
         self.assertIn("id", response.data)
         self.assertIn("first_name", response.data)
         self.assertIn("last_name", response.data)
         self.assertIn("email", response.data)
         self.assertIn("avatar", response.data)
         self.assertIn("banner", response.data)
-        self.assertIn("title", response.data)
         self.assertIn("description", response.data)
         self.assertIn("name", response.data)
         self.assertIn("followers", response.data)
@@ -248,10 +247,10 @@ class PostListCreateViewTest(APITestCase):
 
     def test_can_get_list_posts(self):
         # Create some posts in order to list them
-        Post.objects.create(user=self.user, title="Test", content="Test content")
-        Post.objects.create(user=self.user, title="Test 1", content="Test content")
-        Post.objects.create(user=self.user, title="Test 2", content="Test content")
-        Post.objects.create(user=self.user, title="Test 3", content="Test content")
+        Post.objects.create(user=self.user, content="Test content")
+        Post.objects.create(user=self.user, content="Test content")
+        Post.objects.create(user=self.user, content="Test content")
+        Post.objects.create(user=self.user, content="Test content")
 
         response = self.client.get(
             self.url,
@@ -263,7 +262,7 @@ class PostListCreateViewTest(APITestCase):
         self.assertEqual(len(response.data), 4)
 
     def test_can_create_post_valid_data(self):
-        data = {"title": "Testing via DRF", "content": "Creation via DRF"}
+        data = {"content": "Creation via DRF"}
 
         response = self.client.post(
             self.url,
@@ -272,10 +271,9 @@ class PostListCreateViewTest(APITestCase):
             HTTP_AUTHORIZATION=f"Token {self.token}",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(len(response.data), 6)
+        self.assertEqual(len(response.data), 5)
         self.assertIn("id", response.data)
         self.assertIn("user", response.data)
-        self.assertIn("title", response.data)
         self.assertIn("content", response.data)
         self.assertIn("date_created", response.data)
         self.assertIn("file", response.data)
@@ -294,35 +292,6 @@ class PostListCreateViewTest(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(len(response.data), 2)
-        self.assertIn("title", response.data)
-        self.assertIn("content", response.data)
-
-        # no title
-        invalid_data = {"content": "This is a content"}
-
-        response = self.client.post(
-            self.url,
-            invalid_data,
-            format="json",
-            HTTP_AUTHORIZATION=f"Token {self.token}",
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(len(response.data), 1)
-        self.assertIn("title", response.data)
-
-        # no content
-        invalid_data = {"title": "This is a title"}
-
-        response = self.client.post(
-            self.url,
-            invalid_data,
-            format="json",
-            HTTP_AUTHORIZATION=f"Token {self.token}",
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(len(response.data), 1)
         self.assertIn("content", response.data)
 
@@ -330,7 +299,7 @@ class PostListCreateViewTest(APITestCase):
         response = self.client.get(self.url, format="json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        data = {"title": "Testing via DRF", "content": "Creation via DRF"}
+        data = {"content": "Creation via DRF"}
         response = self.client.post(
             self.url,
             data,
@@ -362,9 +331,7 @@ class PostLikeCreateViewTest(APITestCase):
             {"username": "testuser@site.com", "password": "testpass"},
             format="json",
         ).data["token"]
-        self.post = Post.objects.create(
-            user=self.user, title="Post test", content="This is a content"
-        )
+        self.post = Post.objects.create(user=self.user, content="This is a content")
 
     def test_can_create_like_valid_data(self):
         data = {"post": self.post.id}
@@ -448,9 +415,7 @@ class PostLikeDestroyViewTest(APITestCase):
             {"username": "testuser@site.com", "password": "testpass"},
             format="json",
         ).data["token"]
-        self.post = Post.objects.create(
-            user=self.user, title="Post test", content="This is a content"
-        )
+        self.post = Post.objects.create(user=self.user, content="This is a content")
 
     def test_can_destroy_like_valid_action(self):
         PostLike.objects.create(post=self.post, user=self.user)
@@ -514,9 +479,7 @@ class CommentListCreateViewTest(APITestCase):
             {"username": "testuser@site.com", "password": "testpass"},
             format="json",
         ).data["token"]
-        self.post = Post.objects.create(
-            user=self.user, title="Post test", content="This is a content"
-        )
+        self.post = Post.objects.create(user=self.user, content="This is a content")
 
     def test_can_list_main_comments(self):
         # We need some comments
@@ -730,9 +693,7 @@ class CommentLikeCreateViewTest(APITestCase):
             {"username": "testuser@site.com", "password": "testpass"},
             format="json",
         ).data["token"]
-        self.post = Post.objects.create(
-            user=self.user, title="Post test", content="This is a content"
-        )
+        self.post = Post.objects.create(user=self.user, content="This is a content")
         self.comment = Comment.objects.create(
             post=self.post, user=self.user, content="This is a comment"
         )
@@ -824,9 +785,7 @@ class CommentLikeDestroyViewTest(APITestCase):
             {"username": "testuser@site.com", "password": "testpass"},
             format="json",
         ).data["token"]
-        self.post = Post.objects.create(
-            user=self.user, title="Post test", content="This is a content"
-        )
+        self.post = Post.objects.create(user=self.user, content="This is a content")
         self.comment = Comment.objects.create(
             post=self.post, user=self.user, content="This is a comment"
         )

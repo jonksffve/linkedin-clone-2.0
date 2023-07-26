@@ -26,7 +26,7 @@ class TestPostSerializer(TestCase):
         )
 
         self.raw_post = Post.objects.create(
-            user=self.user, title="Raw object", content="Raw object's content"
+            user=self.user, content="Raw object's content"
         )
 
     def test_post_serialization(self):
@@ -36,10 +36,9 @@ class TestPostSerializer(TestCase):
         serialized_data = serializer.data
 
         # check fields in the serializer
-        self.assertEqual(len(serialized_data), 6)
+        self.assertEqual(len(serialized_data), 5)
         self.assertEqual(serialized_data["id"], self.raw_post.id)
         self.assertEqual(serialized_data["user"]["id"], self.raw_post.user.id)
-        self.assertEqual(serialized_data["title"], self.raw_post.title)
         self.assertEqual(serialized_data["content"], self.raw_post.content)
         self.assertIsNotNone(serialized_data["date_created"])
 
@@ -49,13 +48,11 @@ class TestPostSerializer(TestCase):
     def test_post_serialization_multiple(self):
         # Create multiple test posts
         Post.objects.create(
-            title="Second Test Post",
             content="This is another test post.",
             user=self.user,
         )
 
         Post.objects.create(
-            title="Third Test Post",
             content="This is a third test post.",
             user=self.user,
         )
@@ -79,7 +76,6 @@ class TestPostSerializer(TestCase):
     def test_post_deserialization_valid_data_with_file(self):
         with open("media/test_files/nerdy.jpg", "rb") as file:
             valid_data = {
-                "title": "This is a title",
                 "content": "This is a content",
                 "file": SimpleUploadedFile(file.name, file.read()),
             }
@@ -88,14 +84,13 @@ class TestPostSerializer(TestCase):
             self.assertTrue(serializer.is_valid())
             post_instance = serializer.save(user=self.user)
             self.assertIsInstance(post_instance, Post)
-            self.assertEqual(post_instance.title, valid_data["title"])
             self.assertEqual(post_instance.content, valid_data["content"])
             self.assertEqual(post_instance.user.id, self.user.id)
             self.assertIsNotNone(post_instance.date_created)
             self.assertIsNotNone(post_instance.file)
 
     def test_post_deserialization_valid_data_without_file(self):
-        valid_data = {"title": "This is a title", "content": "This is a content"}
+        valid_data = {"content": "This is a content"}
         serializer = PostSerializer(data=valid_data)
 
         self.assertTrue(serializer.is_valid())
@@ -103,7 +98,6 @@ class TestPostSerializer(TestCase):
         post_instance = serializer.save(user=self.user)
 
         self.assertIsInstance(post_instance, Post)
-        self.assertEqual(post_instance.title, valid_data["title"])
         self.assertEqual(post_instance.content, valid_data["content"])
         self.assertEqual(post_instance.user.id, self.user.id)
         self.assertIsNotNone(post_instance.date_created)
@@ -112,23 +106,6 @@ class TestPostSerializer(TestCase):
     def test_post_deserialization_invalid_data(self):
         # no data
         invalid_data = {}
-        serializer = PostSerializer(data=invalid_data)
-
-        self.assertFalse(serializer.is_valid())
-        self.assertEqual(len(serializer.errors), 2)
-        self.assertIn("title", serializer.errors)
-        self.assertIn("content", serializer.errors)
-
-        # no title
-        invalid_data = {"title": "", "content": "This is a content"}
-        serializer = PostSerializer(data=invalid_data)
-
-        self.assertFalse(serializer.is_valid())
-        self.assertEqual(len(serializer.errors), 1)
-        self.assertIn("title", serializer.errors)
-
-        # no content
-        invalid_data = {"title": "Title"}
         serializer = PostSerializer(data=invalid_data)
 
         self.assertFalse(serializer.is_valid())
@@ -145,7 +122,6 @@ class TestPostSerializer(TestCase):
         for path in invalid_files:
             with open(path, "rb") as file:
                 data = {
-                    "title": "Post with Image",
                     "content": "This post contains an image.",
                     "file": SimpleUploadedFile(file.name, file.read()),
                 }
@@ -162,9 +138,7 @@ class TestCommentSerializer(TestCase):
             email="user@site.com", password="testpass"
         )
 
-        self.post = Post.objects.create(
-            user=self.user, title="This is a post", content="This a content"
-        )
+        self.post = Post.objects.create(user=self.user, content="This a content")
 
         self.raw_comment = Comment.objects.create(
             post=self.post, user=self.user, content="This a comment content"
@@ -275,9 +249,7 @@ class TestCommentSerializer(TestCase):
         self.assertIn("parent", serializer.errors)
 
         # TEST: validate_parent (valid: post, valid: parent. Not from the same post tho.)
-        another_post = Post.objects.create(
-            user=self.user, title="Another post", content="Another content"
-        )
+        another_post = Post.objects.create(user=self.user, content="Another content")
 
         invalid_data = {
             "post": another_post.id,
@@ -349,9 +321,7 @@ class TestPostLikeSerializer(TestCase):
             first_name="Testing",
             last_name="User",
         )
-        self.post = Post.objects.create(
-            user=self.user, title="This is a title", content="This is a content"
-        )
+        self.post = Post.objects.create(user=self.user, content="This is a content")
 
         self.valid_data = {"post": self.post.id}
 
@@ -458,9 +428,7 @@ class TestCommentLikeSerializer(TestCase):
             first_name="User",
             last_name="Object",
         )
-        self.post = Post.objects.create(
-            user=self.user, title="This is a title", content="This is a content"
-        )
+        self.post = Post.objects.create(user=self.user, content="This is a content")
         self.comment = Comment.objects.create(
             post=self.post, user=self.user, content="This is a comment."
         )
