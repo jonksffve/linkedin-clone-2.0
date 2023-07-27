@@ -1,4 +1,4 @@
-//FORMS
+//* FORMS
 export interface LoginFormInputs {
 	username: string;
 	password: string;
@@ -17,6 +17,12 @@ export interface CreatePostFormInputs {
 	file: File | undefined;
 }
 
+export interface CommentFormInput {
+	content: string;
+}
+
+//! END FORMS
+
 export interface UserState {
 	token: string;
 	name: string;
@@ -25,6 +31,7 @@ export interface UserState {
 	logged: boolean;
 }
 
+//* API RESPONSES
 export interface UserResponse {
 	id: number;
 	first_name: string;
@@ -57,4 +64,16 @@ export interface Post {
 	date_created: string;
 	file: string | undefined;
 	is_liked: boolean;
+	like_count: number;
+	comment_count: number;
+}
+
+export interface Comment {
+	id: string;
+	post: string;
+	user: UserResponse;
+	content: string;
+	date_created: string;
+	parent: string | undefined;
+	replies_count: number;
 }
