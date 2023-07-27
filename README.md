@@ -38,6 +38,7 @@ To run this project locally, follow these steps:
 - Implement better TokenAuthentication as per DRF docs: https://james1345.github.io/django-rest-knox/
 - Implement OAuth so we can access with gmail or other platform: https://django-oauth-toolkit.readthedocs.io/en/latest/getting_started.html#what-is-oauth
 - Translate model error messages: https://stackoverflow.com/questions/65724832/how-do-i-customize-and-translate-error-messages-in-djangos-passwordchangeform
+- Better design for responsiveness mobiles
 
 ### FEATURES
 
