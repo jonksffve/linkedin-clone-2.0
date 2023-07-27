@@ -8,12 +8,12 @@ import { CommentFormInput } from '@/helpers/types';
 import { useCallback } from 'react';
 import { createComment } from '@/api/feed';
 
-interface CommentBoxProps {
+interface CommentFormProps {
 	postId: string;
 	onComment: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const CommentBox: React.FC<CommentBoxProps> = ({ postId, onComment }) => {
+const CommentForm: React.FC<CommentFormProps> = ({ postId, onComment }) => {
 	const userState = useAppSelector((state) => state.user);
 
 	const {
@@ -66,4 +66,4 @@ const CommentBox: React.FC<CommentBoxProps> = ({ postId, onComment }) => {
 	);
 };
 
-export default CommentBox;
+export default CommentForm;
