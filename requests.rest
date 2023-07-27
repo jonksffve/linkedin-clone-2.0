@@ -14,7 +14,10 @@ content-type: application/json
 POST http://localhost:8000/api/auth/logout/
 Authorization: Token f90e831fbf71b9d8a28e4bbfa1de748fa805e31fd5355ceaf7f5190e42f60926
 
+### Checking post response
+GET {{localhost}}/post/
+Authorization: Token 90b2c55d1204ea88305f8c2984319ab667d7f53a7ff420e49429906f335720ee
 
 ###Checking retrieve user information
 GET {{localhost}}/account/profile/
-Authorization: Token d80572e5f39d3cfbbb8aa27c137564bebe8b1ecd49752c7d72dc296dc9db9982
+Authorization: Token 90b2c55d1204ea88305f8c2984319ab667d7f53a7ff420e49429906f335720ee

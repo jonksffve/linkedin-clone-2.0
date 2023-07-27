@@ -30,7 +30,7 @@ const FeedPage = () => {
 					<div className='p-2'>
 						<PostCreation />
 						{isLoading && <Spinner />}
-						{posts.length === 0 && (
+						{!isLoading && posts.length === 0 && (
 							<div className='p-2 text-center mt-4'>
 								<p>No posts have been found!</p>
 							</div>
