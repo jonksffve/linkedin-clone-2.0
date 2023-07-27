@@ -56,4 +56,5 @@ export interface Post {
 	content: string;
 	date_created: string;
 	file: string | undefined;
+	is_liked: boolean;
 }
