@@ -1,26 +1,42 @@
-import CardContainer from '../CardContainer';
+import CardContainer from '../../CardContainer';
 import { AiOutlineClose } from 'react-icons/ai';
 import { BsThreeDots } from 'react-icons/bs';
-import Button from '../HTMLelements/Buttons/Button';
+import Button from '../../HTMLelements/Buttons/Button';
 import { GoComment } from 'react-icons/go';
 import { PiShareFat } from 'react-icons/pi';
 import { FaUserFriends } from 'react-icons/fa';
 import { Post } from '@/helpers/types';
-import CommentBox from './CommentBox';
-import { useState, useCallback } from 'react';
+import CommentForm from '../Forms/CommentForm';
+import { useState, useCallback, useEffect } from 'react';
 import { getFileExtension } from '@/helpers/getFileExtension';
-import LikeButton from '../HTMLelements/Buttons/LikeButton';
+import LikeButton from '../../HTMLelements/Buttons/LikeButton';
+import { getComments } from '@/api/feed';
+import { useAppSelector } from '@/store/hooks';
 
 interface PostContentProps {
 	post: Post;
 }
 
 const PostContent: React.FC<PostContentProps> = ({ post }) => {
+	const [likesCount, setLikesCount] = useState(0);
+	const [commentsCount, setCommentsCount] = useState(0);
 	const [showCommentBox, setShowCommentBox] = useState(false);
+	const [comments, setComments] = useState<Comment[]>([]);
+
+	const userState = useAppSelector((state) => state.user);
+
+	useEffect(() => {
+		setLikesCount(post.like_count);
+		setCommentsCount(post.comment_count);
+	}, [post.like_count, post.comment_count]);
 
 	const toggleCommentBox = useCallback(() => {
 		setShowCommentBox(!showCommentBox);
 	}, [showCommentBox]);
+
+	const handleFetchComments = useCallback(() => {
+		void getComments(userState.token, post.id, setComments);
+	}, []);
 
 	const fileType = getFileExtension(post.file);
 
@@ -78,13 +94,19 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
 				</div>
 			</div>
 			<div className='flex flex-row justify-between text-neutral-500 text-sm'>
-				<p>0 people have liked this post</p>
-				<p>0 comments</p>
+				<p>{likesCount} people have liked this post</p>
+				<p
+					className='hover:cursor-pointer hover:underline'
+					onClick={handleFetchComments}
+				>
+					{commentsCount} comments
+				</p>
 			</div>
 			<div className='w-full flex flex-row justify-between text-neutral-500 font-medium'>
 				<LikeButton
 					postId={post.id}
 					likeStatus={post.is_liked}
+					onToggleLike={setLikesCount}
 				/>
 				<Button
 					className='w-full rounded-none'
@@ -105,7 +127,19 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
 				</Button>
 			</div>
 			<hr />
-			{showCommentBox && <CommentBox />}
+			{showCommentBox && (
+				<CommentForm
+					postId={post.id}
+					onComment={setCommentsCount}
+				/>
+			)}
+			<div className='flex flex-col gap-2'>
+				<ul>
+					{comments.map((comment) => (
+						<li>{comment.content}</li>
+					))}
+				</ul>
+			</div>
 		</CardContainer>
 	);
 };
