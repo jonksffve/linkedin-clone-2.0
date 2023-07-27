@@ -76,4 +76,5 @@ export interface Comment {
 	date_created: string;
 	parent: string | undefined;
 	replies_count: number;
+	is_liked: boolean;
 }

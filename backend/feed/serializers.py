@@ -35,8 +35,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_is_liked(self, obj):
         user = self.context["request"].user
-        qs = obj.likes.filter(user=user)
-        return qs.exists()
+        return obj.likes.filter(user=user).exists()
 
     def get_like_count(self, obj):
         return obj.likes.count()
@@ -64,6 +63,7 @@ class CommentSerializer(serializers.ModelSerializer):
         queryset=Comment.objects.all(), required=False, allow_null=True, default=None
     )
     replies_count = serializers.SerializerMethodField(read_only=True)
+    is_liked = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Comment
@@ -75,7 +75,12 @@ class CommentSerializer(serializers.ModelSerializer):
             "date_created",
             "parent",
             "replies_count",
+            "is_liked",
         ]
+
+    def get_is_liked(self, obj):
+        user = self.context["request"].user
+        return obj.likes.filter(user=user).exists()
 
     def get_replies_count(self, obj):
         return obj.replies.count()
