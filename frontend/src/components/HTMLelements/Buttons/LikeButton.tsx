@@ -7,9 +7,14 @@ import { useAppSelector } from '@/store/hooks';
 interface LikeButtonProps {
 	postId: string;
 	likeStatus: boolean;
+	onToggleLike: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const LikeButton: React.FC<LikeButtonProps> = ({ postId, likeStatus }) => {
+const LikeButton: React.FC<LikeButtonProps> = ({
+	postId,
+	likeStatus,
+	onToggleLike,
+}) => {
 	const [isLiked, setIsLiked] = useState(false);
 	const userState = useAppSelector((state) => state.user);
 
@@ -18,8 +23,14 @@ const LikeButton: React.FC<LikeButtonProps> = ({ postId, likeStatus }) => {
 	}, [likeStatus]);
 
 	const handleLike = useCallback(() => {
+		if (isLiked) {
+			onToggleLike((prevState) => prevState - 1);
+		} else {
+			onToggleLike((prevState) => prevState + 1);
+		}
+
 		void togglePostLike(userState.token, isLiked, setIsLiked, postId);
-	}, [isLiked, userState.token, postId]);
+	}, [isLiked, userState.token, postId, onToggleLike]);
 
 	return (
 		<Button
