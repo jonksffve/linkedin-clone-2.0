@@ -2,6 +2,7 @@ import {
 	ENDPOINT_POST_LIKE,
 	ENDPOINT_POST,
 	ENDPOINT_COMMENT,
+	ENDPOINT_COMMENT_LIKE,
 } from '@/helpers/routes';
 import { toastConfig } from '@/helpers/toastifyConfig';
 import { CommentFormInput, CreatePostFormInputs, Post } from '@/helpers/types';
@@ -127,9 +128,40 @@ export const togglePostLike = async (
 				}
 			);
 		}
+		setIsLiked(!isLiked);
 	} catch (error) {
 		toast.error('Something happened', toastConfig);
-	} finally {
+	}
+};
+
+export const toggleCommentLike = async (
+	token: string,
+	isLiked: boolean,
+	commentId: string,
+	setIsLiked: React.Dispatch<React.SetStateAction<boolean>>
+) => {
+	try {
+		if (isLiked) {
+			await axios.delete(`${ENDPOINT_COMMENT_LIKE}${commentId}/`, {
+				headers: {
+					Authorization: `Token ${token}`,
+				},
+			});
+		} else {
+			await axios.post(
+				ENDPOINT_COMMENT_LIKE,
+				{
+					comment: commentId,
+				},
+				{
+					headers: {
+						Authorization: `Token ${token}`,
+					},
+				}
+			);
+		}
 		setIsLiked(!isLiked);
+	} catch (error) {
+		toast.error('Could not like comment.', toastConfig);
 	}
 };
