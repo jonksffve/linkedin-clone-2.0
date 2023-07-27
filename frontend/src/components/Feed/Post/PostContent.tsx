@@ -5,13 +5,14 @@ import Button from '../../HTMLelements/Buttons/Button';
 import { GoComment } from 'react-icons/go';
 import { PiShareFat } from 'react-icons/pi';
 import { FaUserFriends } from 'react-icons/fa';
-import { Post } from '@/helpers/types';
+import { Comment, Post } from '@/helpers/types';
 import CommentForm from '../Forms/CommentForm';
 import { useState, useCallback, useEffect } from 'react';
 import { getFileExtension } from '@/helpers/getFileExtension';
 import LikeButton from '../../HTMLelements/Buttons/LikeButton';
 import { getComments } from '@/api/feed';
 import { useAppSelector } from '@/store/hooks';
+import CommentBox from '../Comment/CommentBox';
 
 interface PostContentProps {
 	post: Post;
@@ -133,12 +134,14 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
 					onComment={setCommentsCount}
 				/>
 			)}
-			<div className='flex flex-col gap-2'>
-				<ul>
-					{comments.map((comment) => (
-						<li>{comment.content}</li>
-					))}
-				</ul>
+
+			<div className='flex flex-col gap-2 p-2 max-h-[250px] overflow-auto'>
+				{comments.map((comment: Comment) => (
+					<CommentBox
+						key={comment.id}
+						data={comment}
+					/>
+				))}
 			</div>
 		</CardContainer>
 	);
