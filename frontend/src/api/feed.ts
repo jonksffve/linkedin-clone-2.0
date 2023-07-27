@@ -1,12 +1,17 @@
-import { ENDPOINT_POST_LIKE, ENDPOINT_POST } from '@/helpers/routes';
+import {
+	ENDPOINT_POST_LIKE,
+	ENDPOINT_POST,
+	ENDPOINT_COMMENT,
+} from '@/helpers/routes';
 import { toastConfig } from '@/helpers/toastifyConfig';
-import { CreatePostFormInputs, Post } from '@/helpers/types';
+import { CommentFormInput, CreatePostFormInputs, Post } from '@/helpers/types';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { UseFormReset } from 'react-hook-form';
 import { uiActions } from '@/store/slices/ui-slice';
 import { Dispatch } from '@reduxjs/toolkit';
 
+//* GET REQUESTS
 export const getPosts = async (
 	token: string,
 	setData: (val: Post[]) => void,
@@ -27,6 +32,24 @@ export const getPosts = async (
 	}
 };
 
+export const getComments = async (
+	token: string,
+	postId: string,
+	setComments: React.Dispatch<React.SetStateAction<Comment[]>>
+) => {
+	try {
+		const response = await axios.get(`${ENDPOINT_COMMENT}?post_id=${postId}`, {
+			headers: {
+				Authorization: `Token ${token}`,
+			},
+		});
+		setComments(response.data as Comment[]);
+	} catch (error) {
+		toast.error('Could not fetch comments.', toastConfig);
+	}
+};
+
+//* POST REQUESTS
 export const createPost = async (
 	token: string,
 	data: CreatePostFormInputs,
@@ -54,6 +77,30 @@ export const createPost = async (
 	}
 };
 
+export const createComment = async (
+	token: string,
+	post: string,
+	data: CommentFormInput
+) => {
+	try {
+		await axios.post(
+			ENDPOINT_COMMENT,
+			{
+				post,
+				content: data['content'],
+			},
+			{
+				headers: {
+					Authorization: `Token ${token}`,
+				},
+			}
+		);
+	} catch (error) {
+		toast.error('Could not create comment', toastConfig);
+	}
+};
+
+//* DYNAMIC REQUESTS
 export const togglePostLike = async (
 	token: string,
 	isLiked: boolean,
