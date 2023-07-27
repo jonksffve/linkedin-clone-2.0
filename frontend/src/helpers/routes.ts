@@ -12,3 +12,4 @@ export const ENDPOINT_PROFILE = 'http://localhost:8000/api/account/profile/';
 export const ENDPOINT_LOGIN = 'http://localhost:8000/api/login/';
 export const ENDPOINT_LOGOUT = 'http://localhost:8000/api/auth/logout/';
 export const ENDPOINT_POST = 'http://localhost:8000/api/post/';
+export const ENDPOINT_POST_LIKE = 'http://localhost:8000/api/post/like/';

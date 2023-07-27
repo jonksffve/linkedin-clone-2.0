@@ -1,4 +1,4 @@
-import { ENDPOINT_POST } from '@/helpers/routes';
+import { ENDPOINT_POST_LIKE, ENDPOINT_POST } from '@/helpers/routes';
 import { toastConfig } from '@/helpers/toastifyConfig';
 import { CreatePostFormInputs, Post } from '@/helpers/types';
 import axios from 'axios';
@@ -51,5 +51,38 @@ export const createPost = async (
 		toast.error('Something happened', toastConfig);
 	} finally {
 		setIsLoading(false);
+	}
+};
+
+export const togglePostLike = async (
+	token: string,
+	isLiked: boolean,
+	setIsLiked: (val: boolean) => void,
+	postId: string
+) => {
+	try {
+		if (isLiked) {
+			await axios.delete(`${ENDPOINT_POST_LIKE}${postId}/`, {
+				headers: {
+					Authorization: `Token ${token}`,
+				},
+			});
+		} else {
+			await axios.post(
+				ENDPOINT_POST_LIKE,
+				{
+					post: postId,
+				},
+				{
+					headers: {
+						Authorization: `Token ${token}`,
+					},
+				}
+			);
+		}
+	} catch (error) {
+		toast.error('Something happened', toastConfig);
+	} finally {
+		setIsLiked(!isLiked);
 	}
 };

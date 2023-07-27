@@ -1,5 +1,5 @@
 import CardContainer from '../CardContainer';
-import { AiOutlineClose, AiOutlineLike } from 'react-icons/ai';
+import { AiOutlineClose } from 'react-icons/ai';
 import { BsThreeDots } from 'react-icons/bs';
 import Button from '../HTMLelements/Buttons/Button';
 import { GoComment } from 'react-icons/go';
@@ -9,6 +9,7 @@ import { Post } from '@/helpers/types';
 import CommentBox from './CommentBox';
 import { useState, useCallback } from 'react';
 import { getFileExtension } from '@/helpers/getFileExtension';
+import LikeButton from '../HTMLelements/Buttons/LikeButton';
 
 interface PostContentProps {
 	post: Post;
@@ -76,14 +77,15 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
 					<p className='p-2'>{post.content}</p>
 				</div>
 			</div>
+			<div className='flex flex-row justify-between text-neutral-500 text-sm'>
+				<p>0 people have liked this post</p>
+				<p>0 comments</p>
+			</div>
 			<div className='w-full flex flex-row justify-between text-neutral-500 font-medium'>
-				<Button className='w-full rounded-none'>
-					Like
-					<AiOutlineLike
-						className='absolute left-5'
-						size={20}
-					/>
-				</Button>
+				<LikeButton
+					postId={post.id}
+					likeStatus={post.is_liked}
+				/>
 				<Button
 					className='w-full rounded-none'
 					onClick={toggleCommentBox}
