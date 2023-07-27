@@ -7,6 +7,7 @@ import magic
 class PostSerializer(serializers.ModelSerializer):
     user = UserListSerializer(read_only=True)
     file = serializers.FileField(allow_empty_file=True, required=False, default=None)
+    is_liked = serializers.SerializerMethodField(read_only=True)
 
     def validate_file(self, value):
         if not value:
@@ -30,9 +31,14 @@ class PostSerializer(serializers.ModelSerializer):
 
         return value
 
+    def get_is_liked(self, obj):
+        user = self.context["request"].user
+        qs = obj.likes.filter(user=user)
+        return qs.exists()
+
     class Meta:
         model = Post
-        fields = ["id", "user", "content", "date_created", "file"]
+        fields = ["id", "user", "content", "date_created", "file", "is_liked"]
 
 
 class CommentSerializer(serializers.ModelSerializer):
