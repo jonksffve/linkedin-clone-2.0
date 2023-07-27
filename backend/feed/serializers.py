@@ -8,6 +8,8 @@ class PostSerializer(serializers.ModelSerializer):
     user = UserListSerializer(read_only=True)
     file = serializers.FileField(allow_empty_file=True, required=False, default=None)
     is_liked = serializers.SerializerMethodField(read_only=True)
+    like_count = serializers.SerializerMethodField(read_only=True)
+    comment_count = serializers.SerializerMethodField(read_only=True)
 
     def validate_file(self, value):
         if not value:
@@ -36,9 +38,24 @@ class PostSerializer(serializers.ModelSerializer):
         qs = obj.likes.filter(user=user)
         return qs.exists()
 
+    def get_like_count(self, obj):
+        return obj.likes.count()
+
+    def get_comment_count(self, obj):
+        return obj.comments.count()
+
     class Meta:
         model = Post
-        fields = ["id", "user", "content", "date_created", "file", "is_liked"]
+        fields = [
+            "id",
+            "user",
+            "content",
+            "date_created",
+            "file",
+            "is_liked",
+            "like_count",
+            "comment_count",
+        ]
 
 
 class CommentSerializer(serializers.ModelSerializer):
