@@ -19,7 +19,7 @@ urlpatterns = [
     ),
     path("comment/", views.CommentListCreateView.as_view(), name="comment-list-create"),
     path(
-        "comment/like",
+        "comment/like/",
         views.CommentLikeCreateView.as_view(),
         name="comment-like-create",
     ),
