@@ -5,7 +5,12 @@ import {
 	ENDPOINT_COMMENT_LIKE,
 } from '@/helpers/routes';
 import { toastConfig } from '@/helpers/toastifyConfig';
-import { CommentFormInput, CreatePostFormInputs, Post } from '@/helpers/types';
+import {
+	Comment,
+	CommentFormInput,
+	CreatePostFormInputs,
+	Post,
+} from '@/helpers/types';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { UseFormReset } from 'react-hook-form';
@@ -81,14 +86,21 @@ export const createPost = async (
 export const createComment = async (
 	token: string,
 	post: string,
-	data: CommentFormInput
+	data: CommentFormInput,
+	reset: UseFormReset<CommentFormInput>,
+	onComment: {
+		setCount: React.Dispatch<React.SetStateAction<number>>;
+		setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
+	},
+	parentId?: string | undefined
 ) => {
 	try {
-		await axios.post(
+		const response = await axios.post(
 			ENDPOINT_COMMENT,
 			{
+				...data,
 				post,
-				content: data['content'],
+				parent: parentId,
 			},
 			{
 				headers: {
@@ -96,6 +108,15 @@ export const createComment = async (
 				},
 			}
 		);
+		reset();
+		onComment.setCount((prevState) => prevState + 1);
+		if (!parentId) {
+			onComment.setComments((prevState) => [
+				response.data as Comment,
+				...prevState,
+			]);
+		}
+		toast.success('Commented successfully', toastConfig);
 	} catch (error) {
 		toast.error('Could not create comment', toastConfig);
 	}
