@@ -3,13 +3,18 @@ import { Comment } from '@/helpers/types';
 import { useAppSelector } from '@/store/hooks';
 import { formatDistanceToNow } from 'date-fns';
 import { useCallback, useState, useEffect } from 'react';
+import CommentForm from '../Forms/CommentForm';
 
 interface CommentBoxProps {
 	data: Comment;
+	onComment: {
+		setCount: React.Dispatch<React.SetStateAction<number>>;
+	};
 }
 
-const CommentBox: React.FC<CommentBoxProps> = ({ data }) => {
+const CommentBox: React.FC<CommentBoxProps> = ({ data, onComment }) => {
 	const [isLiked, setIsLiked] = useState(false);
+	const [showReplyForm, setShowReplyForm] = useState(false);
 	const userState = useAppSelector((state) => state.user);
 
 	useEffect(() => {
@@ -19,6 +24,10 @@ const CommentBox: React.FC<CommentBoxProps> = ({ data }) => {
 	const handleToggleLike = useCallback(() => {
 		void toggleCommentLike(userState.token, isLiked, data.id, setIsLiked);
 	}, [userState.token, data.id, isLiked]);
+
+	const handleToggleReplyForm = useCallback(() => {
+		setShowReplyForm(!showReplyForm);
+	}, [showReplyForm]);
 
 	return (
 		<>
@@ -42,16 +51,33 @@ const CommentBox: React.FC<CommentBoxProps> = ({ data }) => {
 						>
 							{isLiked ? 'Liked' : 'Like'}
 						</p>
-						<p className='hover:cursor-pointer hover:text-neutral-600'>Reply</p>
+						<p
+							className='hover:cursor-pointer hover:text-neutral-600'
+							onClick={handleToggleReplyForm}
+						>
+							Reply
+						</p>
 
 						<p className='font-normal'>
 							{formatDistanceToNow(new Date(data.date_created), {
 								addSuffix: true,
 							})}
 						</p>
+						{data.replies_count > 0 && (
+							<p className='hover:cursor-pointer hover:underline'>
+								+{data.replies_count} replies
+							</p>
+						)}
 					</div>
 				</div>
 			</div>
+			{showReplyForm && (
+				<CommentForm
+					postId={data.post}
+					parentId={data.id}
+					onComment={onComment}
+				/>
+			)}
 		</>
 	);
 };
