@@ -37,7 +37,7 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
 
 	const handleFetchComments = useCallback(() => {
 		void getComments(userState.token, post.id, setComments);
-	}, []);
+	}, [post.id, userState.token]);
 
 	const fileType = getFileExtension(post.file);
 
@@ -131,7 +131,7 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
 			{showCommentBox && (
 				<CommentForm
 					postId={post.id}
-					onComment={setCommentsCount}
+					onComment={{ setCount: setCommentsCount, setComments: setComments }}
 				/>
 			)}
 
@@ -140,6 +140,7 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
 					<CommentBox
 						key={comment.id}
 						data={comment}
+						onComment={{ setCount: setCommentsCount }}
 					/>
 				))}
 			</div>
