@@ -41,15 +41,24 @@ export const getPosts = async (
 export const getComments = async (
 	token: string,
 	postId: string,
-	setComments: React.Dispatch<React.SetStateAction<Comment[]>>
+	setData: React.Dispatch<React.SetStateAction<Comment[]>>,
+	parentId?: string
 ) => {
 	try {
-		const response = await axios.get(`${ENDPOINT_COMMENT}?post_id=${postId}`, {
+		let url = ENDPOINT_COMMENT;
+
+		if (parentId) {
+			url += `?parent_id=${parentId}`;
+		} else {
+			url += `?post_id=${postId}`;
+		}
+
+		const response = await axios.get(url, {
 			headers: {
 				Authorization: `Token ${token}`,
 			},
 		});
-		setComments(response.data as Comment[]);
+		setData(response.data as Comment[]);
 	} catch (error) {
 		toast.error('Could not fetch comments.', toastConfig);
 	}
@@ -91,6 +100,7 @@ export const createComment = async (
 	onComment: {
 		setCount: React.Dispatch<React.SetStateAction<number>>;
 		setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
+		setRepliesCount?: React.Dispatch<React.SetStateAction<number>>;
 	},
 	parentId?: string | undefined
 ) => {
@@ -110,12 +120,15 @@ export const createComment = async (
 		);
 		reset();
 		onComment.setCount((prevState) => prevState + 1);
-		if (!parentId) {
-			onComment.setComments((prevState) => [
-				response.data as Comment,
-				...prevState,
-			]);
+		onComment.setComments((prevState) => [
+			response.data as Comment,
+			...prevState,
+		]);
+
+		if (parentId && onComment.setRepliesCount) {
+			onComment.setRepliesCount((prevState) => prevState + 1);
 		}
+
 		toast.success('Commented successfully', toastConfig);
 	} catch (error) {
 		toast.error('Could not create comment', toastConfig);
