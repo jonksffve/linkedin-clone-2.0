@@ -1,5 +1,3 @@
-import os
-
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -36,14 +34,15 @@ class TestPostSerializer(TestCase):
         serialized_data = serializer.data
 
         # check fields in the serializer
-        self.assertEqual(len(serialized_data), 5)
+        self.assertEqual(len(serialized_data), 8)
         self.assertEqual(serialized_data["id"], self.raw_post.id)
         self.assertEqual(serialized_data["user"]["id"], self.raw_post.user.id)
         self.assertEqual(serialized_data["content"], self.raw_post.content)
         self.assertIsNotNone(serialized_data["date_created"])
-
-        # image, video read_only should not be included (if not given)
         self.assertIsNone(serialized_data["file"])
+        self.assertIn("is_liked", serialized_data)
+        self.assertIn("comments", serialized_data)
+        self.assertIn("likes", serialized_data)
 
     def test_post_serialization_multiple(self):
         # Create multiple test posts
@@ -270,7 +269,7 @@ class TestCommentSerializer(TestCase):
         # serialized data
         serialized_data = serializer.data
 
-        self.assertEqual(len(serialized_data), 7)
+        self.assertEqual(len(serialized_data), 8)
         self.assertIn("id", serialized_data)
         self.assertEqual(serialized_data["post"], self.raw_comment.post.id)
         self.assertEqual(serialized_data["user"]["id"], self.raw_comment.user.id)
@@ -278,6 +277,7 @@ class TestCommentSerializer(TestCase):
         self.assertIsNotNone(serialized_data["date_created"])
         self.assertIsNone(serialized_data["parent"])
         self.assertEqual(serialized_data["replies_count"], 0)
+        self.assertFalse(serialized_data["is_liked"])
 
     def test_reply_serialization(self):
         reply_instance = Comment.objects.create(
@@ -292,7 +292,7 @@ class TestCommentSerializer(TestCase):
         # serialized data
         serialized_data = serializer.data
 
-        self.assertEqual(len(serialized_data), 7)
+        self.assertEqual(len(serialized_data), 8)
         self.assertIn("id", serialized_data)
         self.assertEqual(serialized_data["post"], reply_instance.post.id)
         self.assertEqual(serialized_data["user"]["id"], reply_instance.user.id)
@@ -300,6 +300,7 @@ class TestCommentSerializer(TestCase):
         self.assertIsNotNone(serialized_data["date_created"])
         self.assertEqual(serialized_data["parent"], reply_instance.parent.id)
         self.assertEqual(serialized_data["replies_count"], 0)
+        self.assertFalse(serialized_data["is_liked"])
 
     def test_comment_serialization_user_serializer(self):
         serializer = CommentSerializer(instance=self.raw_comment)

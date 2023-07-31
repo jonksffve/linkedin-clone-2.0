@@ -21,6 +21,14 @@ class Post(models.Model):
         blank=True,
     )
 
+    @property
+    def get_comments_count(self):
+        return self.comments.count()
+
+    @property
+    def get_likes_count(self):
+        return self.likes.count()
+
     class Meta:
         ordering = ["-date_created"]
 
