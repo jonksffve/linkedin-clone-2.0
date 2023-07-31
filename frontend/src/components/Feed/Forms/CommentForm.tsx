@@ -12,7 +12,7 @@ interface CommentFormProps {
 	postId: string;
 	parentId?: string;
 	onComment: {
-		setCount: React.Dispatch<React.SetStateAction<number>>;
+		setCommentsCount: React.Dispatch<React.SetStateAction<number>>;
 		setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 		setRepliesCount?: React.Dispatch<React.SetStateAction<number>>;
 	};

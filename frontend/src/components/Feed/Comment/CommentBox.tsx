@@ -8,7 +8,7 @@ import CommentForm from '../Forms/CommentForm';
 interface CommentBoxProps {
 	data: Comment;
 	onComment: {
-		setCount: React.Dispatch<React.SetStateAction<number>>;
+		setCommentsCount: React.Dispatch<React.SetStateAction<number>>;
 	};
 }
 
@@ -45,7 +45,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({ data, onComment }) => {
 					src={data.user.avatar}
 					alt=''
 				/>
-				<div className='flex flex-col gap-0'>
+				<div className='flex flex-col gap-0 w-full'>
 					<div className='w-fit rounded-md p-2 bg-slate-100'>
 						{data.content}
 					</div>
@@ -91,11 +91,13 @@ const CommentBox: React.FC<CommentBoxProps> = ({ data, onComment }) => {
 							}}
 						/>
 					)}
-					<div className='mt-2'>
+					<div className='mt-2 relative'>
+						<div className='absolute h-full w-1 bg-gray-300 left-[-20px] top-[-20px]'></div>
 						{replies.map((reply) => (
 							<CommentBox
 								key={reply.id}
 								data={reply}
+								onComment={onComment}
 							/>
 						))}
 					</div>

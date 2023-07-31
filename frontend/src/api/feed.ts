@@ -98,7 +98,7 @@ export const createComment = async (
 	data: CommentFormInput,
 	reset: UseFormReset<CommentFormInput>,
 	onComment: {
-		setCount: React.Dispatch<React.SetStateAction<number>>;
+		setCommentsCount: React.Dispatch<React.SetStateAction<number>>;
 		setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 		setRepliesCount?: React.Dispatch<React.SetStateAction<number>>;
 	},
@@ -119,7 +119,7 @@ export const createComment = async (
 			}
 		);
 		reset();
-		onComment.setCount((prevState) => prevState + 1);
+		onComment.setCommentsCount((prevState) => prevState + 1);
 		onComment.setComments((prevState) => [
 			response.data as Comment,
 			...prevState,

@@ -131,7 +131,10 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
 			{showCommentBox && (
 				<CommentForm
 					postId={post.id}
-					onComment={{ setCount: setCommentsCount, setComments: setComments }}
+					onComment={{
+						setCommentsCount: setCommentsCount,
+						setComments: setComments,
+					}}
 				/>
 			)}
 
@@ -140,7 +143,7 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
 					<CommentBox
 						key={comment.id}
 						data={comment}
-						onComment={{ setCount: setCommentsCount }}
+						onComment={{ setCommentsCount: setCommentsCount }}
 					/>
 				))}
 			</div>
