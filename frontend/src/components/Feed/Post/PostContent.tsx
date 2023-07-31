@@ -36,8 +36,10 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
 	}, [showCommentBox]);
 
 	const handleFetchComments = useCallback(() => {
+		if (commentsCount === 0) return;
+
 		void getComments(userState.token, post.id, setComments);
-	}, [post.id, userState.token]);
+	}, [post.id, userState.token, commentsCount]);
 
 	const fileType = getFileExtension(post.file);
 
