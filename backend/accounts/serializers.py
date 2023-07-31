@@ -27,7 +27,7 @@ class UserListSerializer(serializers.ModelSerializer):
     Serializer used to retrieve information about a CustomUser model instance
     """
 
-    name = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField(read_only=True)
 
     def get_name(self, obj):
         return obj.get_full_name()
@@ -35,6 +35,20 @@ class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "avatar",
+            "banner",
+            "title",
+            "description",
+            "name",
+            "followers",
+            "following",
+            "posts",
+        ]
+        read_only_fields = [
             "id",
             "first_name",
             "last_name",

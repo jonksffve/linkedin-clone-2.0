@@ -48,6 +48,24 @@ class TestUserCreationSerializer(TestCase):
             serializer = UserCreationSerializer(data=data)
             self.assertFalse(serializer.is_valid())
 
+    def test_serialization(self):
+        user_instance = CustomUser.objects.create_user(
+            email="testing@site.com",
+            password="testpass",
+            first_name="Testing",
+            last_name="Serialization",
+        )
+
+        serializer = UserCreationSerializer(instance=user_instance)
+        serialized_obj = serializer.data
+
+        self.assertEqual(len(serialized_obj), 4)
+        self.assertEqual(serialized_obj["first_name"], user_instance.first_name)
+        self.assertEqual(serialized_obj["last_name"], user_instance.last_name)
+        self.assertEqual(serialized_obj["email"], user_instance.email)
+        self.assertIsNotNone(serialized_obj["avatar"])
+        self.assertNotIn("password", serialized_obj)
+
 
 class TestUserListSerializer(TestCase):
     def test_serialization(self):
@@ -64,19 +82,19 @@ class TestUserListSerializer(TestCase):
         serialized_data = serializer.data
 
         # all the fields
-        self.assertTrue(len(serialized_data), 11)
+        self.assertTrue(len(serialized_data), 12)
         self.assertIn("id", serialized_data)
         self.assertIn("first_name", serialized_data)
         self.assertIn("last_name", serialized_data)
         self.assertIn("email", serialized_data)
         self.assertIn("avatar", serialized_data)
         self.assertIn("banner", serialized_data)
+        self.assertIn("title", serialized_data)
         self.assertIn("description", serialized_data)
         self.assertIn("name", serialized_data)
         self.assertIn("followers", serialized_data)
         self.assertIn("following", serialized_data)
         self.assertIn("posts", serialized_data)
-        self.assertNotIn("password", serialized_data)
 
         # get_name works
         self.assertEqual(serialized_data["name"], "Test User")
