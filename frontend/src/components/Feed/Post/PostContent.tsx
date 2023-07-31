@@ -27,9 +27,9 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
 	const userState = useAppSelector((state) => state.user);
 
 	useEffect(() => {
-		setLikesCount(post.like_count);
-		setCommentsCount(post.comment_count);
-	}, [post.like_count, post.comment_count]);
+		setLikesCount(post.get_likes);
+		setCommentsCount(post.get_comments);
+	}, [post.get_likes, post.get_comments]);
 
 	const toggleCommentBox = useCallback(() => {
 		setShowCommentBox(!showCommentBox);

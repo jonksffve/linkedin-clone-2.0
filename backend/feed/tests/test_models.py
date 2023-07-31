@@ -32,8 +32,8 @@ class PostModelTest(TestCase):
         self.assertNotEqual(post.file, None)
 
     def test_model_properties(self):
-        self.assertEqual(self.post.get_comments_count, 0)
-        self.assertEqual(self.post.get_likes_count, 0)
+        self.assertEqual(self.post.get_comments, 0)
+        self.assertEqual(self.post.get_likes, 0)
 
     def test_post_model_fields(self):
         # Test the fields of the Post model created without file

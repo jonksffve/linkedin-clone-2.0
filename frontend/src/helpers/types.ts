@@ -64,8 +64,8 @@ export interface Post {
 	date_created: string;
 	file: string | undefined;
 	is_liked: boolean;
-	like_count: number;
-	comment_count: number;
+	get_comments: number;
+	get_likes: number;
 }
 
 export interface Comment {

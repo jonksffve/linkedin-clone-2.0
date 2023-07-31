@@ -50,10 +50,9 @@ class PostSerializer(serializers.ModelSerializer):
             "date_created",
             "file",
             "is_liked",
-            "comments",
-            "likes",
+            "get_comments",
+            "get_likes",
         ]
-        read_only_fields = ["comments", "likes"]
 
 
 class CommentSerializer(serializers.ModelSerializer):

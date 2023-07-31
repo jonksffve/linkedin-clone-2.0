@@ -279,8 +279,8 @@ class PostListCreateViewTest(APITestCase):
         self.assertIn("date_created", response.data)
         self.assertIn("file", response.data)
         self.assertIn("is_liked", response.data)
-        self.assertIn("comments", response.data)
-        self.assertIn("likes", response.data)
+        self.assertIn("get_comments", response.data)
+        self.assertIn("get_likes", response.data)
         self.assertIsNotNone(response.data["date_created"])
         self.assertIsNone(response.data["file"])
 

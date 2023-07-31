@@ -41,8 +41,8 @@ class TestPostSerializer(TestCase):
         self.assertIsNotNone(serialized_data["date_created"])
         self.assertIsNone(serialized_data["file"])
         self.assertIn("is_liked", serialized_data)
-        self.assertIn("comments", serialized_data)
-        self.assertIn("likes", serialized_data)
+        self.assertIn("get_comments", serialized_data)
+        self.assertIn("get_likes", serialized_data)
 
     def test_post_serialization_multiple(self):
         # Create multiple test posts

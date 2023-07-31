@@ -22,11 +22,11 @@ class Post(models.Model):
     )
 
     @property
-    def get_comments_count(self):
+    def get_comments(self):
         return self.comments.count()
 
     @property
-    def get_likes_count(self):
+    def get_likes(self):
         return self.likes.count()
 
     class Meta:
