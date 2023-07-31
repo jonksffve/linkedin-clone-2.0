@@ -16,7 +16,7 @@ Authorization: Token fe604fb1796078dc260508a3c19a0de3aaa9e4c7d5e264433ad04c55195
 
 ### Checking post response
 GET {{localhost}}/post/
-Authorization: Token fe604fb1796078dc260508a3c19a0de3aaa9e4c7d5e264433ad04c5519576aab
+Authorization: Token 95b5a5f93a813ed1676c53a1b9caa7dd46c02a6c3ff61b0c25b2cdc425e93ad5
 
 ### Checking comment response
 GET {{localhost}}/comment/?post_id=11
