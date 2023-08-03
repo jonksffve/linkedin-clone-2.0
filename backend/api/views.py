@@ -1,5 +1,5 @@
 from django.contrib.auth import login
-
+from django.shortcuts import get_object_or_404
 
 from rest_framework import generics, permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
@@ -11,7 +11,9 @@ from feed.serializers import (
     CommentSerializer,
     CommentLikeSerializer,
 )
+
 from accounts.serializers import UserCreationSerializer, UserListSerializer
+from accounts.models import CustomUser
 
 from knox.views import LoginView as KnoxLoginView
 
@@ -58,17 +60,22 @@ class LoginView(KnoxLoginView):
 
 class UserRetrieveInformationView(generics.RetrieveAPIView):
     """
-    Function that retrieves current loggedin user information
+    Function that retrieves user information
 
     Returns:
         - 200 Ok: with a serialized representation of the user object
         - 401 Unauthorized: When user didn't provide valid authorization
+        - 404 Not found: When failed to lookup user information with given email
     """
 
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserListSerializer
 
     def get_object(self):
+        if "email" in self.request.query_params:
+            email = self.request.query_params["email"]
+            user = get_object_or_404(CustomUser, email=email)
+            return user
         return self.request.user
 
 

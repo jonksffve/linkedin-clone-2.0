@@ -173,6 +173,7 @@ class UserRetrieveViewTest(APITestCase):
     Returns:
         - 200 Ok: with a serialized representation of the user object
         - 401 Unauthorized: When user didn't provide valid authorization
+        - 404 Not found: When failed to lookup user information with given email
     """
 
     def setUp(self):
@@ -183,13 +184,19 @@ class UserRetrieveViewTest(APITestCase):
             first_name="Testing",
             last_name="DRF",
         )
+        self.other_user = CustomUser.objects.create_user(
+            email="testuser2@site.com",
+            password="testpass",
+            first_name="Testing 2",
+            last_name="DRF",
+        )
         self.token = self.client.post(
             reverse("login"),
             {"username": "testuser@site.com", "password": "testpass"},
             format="json",
         ).data["token"]
 
-    def test_can_retrieve_information(self):
+    def test_can_retrieve_own_information(self):
         response = self.client.get(
             self.url,
             format="json",
@@ -203,18 +210,24 @@ class UserRetrieveViewTest(APITestCase):
         self.assertEqual(response.data["description"], "")
         self.assertEqual(response.data["name"], self.user.get_full_name())
         self.assertEqual(len(response.data), 12)
-        self.assertIn("id", response.data)
-        self.assertIn("first_name", response.data)
-        self.assertIn("last_name", response.data)
-        self.assertIn("email", response.data)
-        self.assertIn("avatar", response.data)
-        self.assertIn("banner", response.data)
-        self.assertIn("title", response.data)
-        self.assertIn("description", response.data)
-        self.assertIn("name", response.data)
-        self.assertIn("followers", response.data)
-        self.assertIn("following", response.data)
-        self.assertIn("posts", response.data)
+
+    def test_can_retrieve_other_information(self):
+        response = self.client.get(
+            f"{self.url}?email={self.other_user.email}",
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["email"], self.other_user.email)
+
+    def test_can_not_retrieve_information(self):
+        # wrong data
+        response = self.client.get(
+            f"{self.url}?email=idontexist@site.com",
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_unauthorized_retrieve_information(self):
         response = self.client.get(self.url, format="json")
