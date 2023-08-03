@@ -24,10 +24,19 @@ export interface CommentFormInput {
 //! END FORMS
 
 export interface UserState {
-	token: string;
-	name: string;
+	token: string | undefined;
+	id: number | undefined;
+	first_name: string;
+	last_name: string;
+	email: string;
 	avatar: string;
-	id: number;
+	banner: string;
+	title: string;
+	description: string;
+	name: string;
+	followers: number;
+	following: number;
+	posts: number;
 	logged: boolean;
 }
 
@@ -37,10 +46,10 @@ export interface UserResponse {
 	first_name: string;
 	last_name: string;
 	email: string;
-	avatar: string | undefined;
-	banner: string | undefined;
-	title: string | undefined;
-	description: string | undefined;
+	avatar: string;
+	banner: string;
+	title: string;
+	description: string;
 	name: string;
 	followers: number;
 	following: number;
