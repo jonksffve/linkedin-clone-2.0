@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store/hooks';
 import { uiActions } from '../store/slices/ui-slice';
 import { ROUTE_INDEX } from '../helpers/routes';
-import { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { getUserInformationAPI } from '../api/auth';
 import { userActions } from '../store/slices/user-slice';
 import { UserResponse } from '../helpers/types';
