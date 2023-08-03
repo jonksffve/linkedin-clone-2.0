@@ -32,7 +32,7 @@ class CustomUser(AbstractUser):
     banner = models.ImageField(
         _("banner image"),
         upload_to="avatar/banner/",
-        default="banner-placeholder.jpeg",
+        default="banner-placeholder.jpg",
         blank=True,
         null=True,
     )
