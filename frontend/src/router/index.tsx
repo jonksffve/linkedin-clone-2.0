@@ -3,6 +3,7 @@ import IndexPage from '../pages/IndexPage';
 import RootLayout from './layouts/RootLayout';
 import ErrorPage from '../pages/ErrorPage';
 import FeedPage from '@/pages/FeedPage';
+import ProfilePage from '@/pages/ProfilePage';
 
 export const router = createBrowserRouter([
 	{
@@ -34,14 +35,10 @@ export const router = createBrowserRouter([
 				path: 'notifications/',
 				element: <h2>notifications</h2>,
 			},
+			{
+				path: 'profile/:userEmail/',
+				element: <ProfilePage />,
+			},
 		],
-	},
-	{
-		path: 'register/',
-		element: <div>Register</div>,
-	},
-	{
-		path: 'login/',
-		element: <div>Login</div>,
 	},
 ]);
