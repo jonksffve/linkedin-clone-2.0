@@ -74,9 +74,15 @@ export const createTokenAuthAPI = async (
 	}
 };
 
-export const getUserInformationAPI = async (token: string) => {
+export const getUserInformationAPI = async (token: string, userEmail?: string) => {
 	try {
-		const response = await axios.get(ENDPOINT_PROFILE, {
+		let url = ENDPOINT_PROFILE
+
+		if (userEmail) {
+			url += `?email=${userEmail}`
+		}
+
+		const response = await axios.get(url, {
 			headers: {
 				Authorization: `Token ${token}`,
 			},
