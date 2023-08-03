@@ -34,9 +34,9 @@ export interface UserState {
 	title: string;
 	description: string;
 	name: string;
-	followers: number;
-	following: number;
-	posts: number;
+	get_followers: number;
+	get_following: number;
+	get_posts: number;
 	logged: boolean;
 }
 
@@ -51,9 +51,9 @@ export interface UserResponse {
 	title: string;
 	description: string;
 	name: string;
-	followers: number;
-	following: number;
-	posts: number;
+	get_followers: number;
+	get_following: number;
+	get_posts: number;
 }
 
 export interface TokenResponse {

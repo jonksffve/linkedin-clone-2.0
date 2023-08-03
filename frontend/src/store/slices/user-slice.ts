@@ -12,9 +12,9 @@ const initialState: UserState = {
 	title: '',
 	description: '',
 	name: '',
-	followers: 0,
-	following: 0,
-	posts: 0,
+	get_followers: 0,
+	get_following: 0,
+	get_posts: 0,
 	logged: false,
 };
 
@@ -33,9 +33,9 @@ const userSlice = createSlice({
 			state.title = action.payload.title;
 			state.description = action.payload.description;
 			state.name = action.payload.name;
-			state.followers = action.payload.followers;
-			state.following = action.payload.following;
-			state.posts = action.payload.posts;
+			state.get_followers = action.payload.get_followers;
+			state.get_following = action.payload.get_following;
+			state.get_posts = action.payload.get_posts;
 			state.logged = true;
 		},
 		removeUser: (state) => {
@@ -49,9 +49,9 @@ const userSlice = createSlice({
 			state.title = '';
 			state.description = '';
 			state.name = '';
-			state.followers = 0;
-			state.following = 0;
-			state.posts = 0;
+			state.get_followers = 0;
+			state.get_following = 0;
+			state.get_posts = 0;
 			state.logged = false;
 		},
 	},
