@@ -6,7 +6,7 @@ POST {{localhost}}/login/
 content-type: application/json
 
 {
-    "username": "jonksff@gmail.com",
+    "username": "arya@site.com",
     "password": "maijo132"
 }
 
@@ -24,4 +24,4 @@ Authorization: Token fe604fb1796078dc260508a3c19a0de3aaa9e4c7d5e264433ad04c55195
 
 ###Checking retrieve user information
 GET {{localhost}}/account/profile/
-Authorization: Token 90b2c55d1204ea88305f8c2984319ab667d7f53a7ff420e49429906f335720ee
+Authorization: Token 1eccfe6012d54a4ab9cc751766d0a2c0a8817145ea29713fe23c06a3705dbd14
