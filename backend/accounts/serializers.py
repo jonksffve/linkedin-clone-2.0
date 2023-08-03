@@ -32,6 +32,8 @@ class UserListSerializer(serializers.ModelSerializer):
     def get_name(self, obj):
         return obj.get_full_name()
 
+    #! UPDATE TESTS CASES 3/8
+
     class Meta:
         model = CustomUser
         fields = [
@@ -44,9 +46,9 @@ class UserListSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "name",
-            "followers",
-            "following",
-            "posts",
+            "get_followers",
+            "get_following",
+            "get_posts",
         ]
         read_only_fields = [
             "id",
@@ -58,7 +60,7 @@ class UserListSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "name",
-            "followers",
-            "following",
-            "posts",
+            "get_followers",
+            "get_following",
+            "get_posts",
         ]
