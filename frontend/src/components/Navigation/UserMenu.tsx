@@ -4,8 +4,8 @@ import MenuCard from './MenuCard';
 import { useAppSelector } from '@/store/hooks';
 import Button from '../HTMLelements/Buttons/Button';
 import { logoutUserAPI } from '@/api/auth';
-import { useNavigate } from 'react-router-dom';
-import { ROUTE_INDEX } from '@/helpers/routes';
+import { Link, useNavigate } from 'react-router-dom';
+import { ROUTE_INDEX, ROUTE_PROFILE } from '@/helpers/routes';
 
 const UserMenu = () => {
 	const [showMenu, setShowMenu] = useState(false);
@@ -21,6 +21,7 @@ const UserMenu = () => {
 	}, []);
 
 	const handleLogOut = useCallback(async () => {
+		if (!userState.token) return;
 		await logoutUserAPI(userState.token);
 		localStorage.removeItem('auth_token');
 		navigate(ROUTE_INDEX);
@@ -58,9 +59,12 @@ const UserMenu = () => {
 									<p className='text-sm truncate'>{userState.title}</p>
 								</div>
 							</div>
-							<Button className='border-blue-300 hover:bg-blue-100 text-blue-500 font-bold text-sm'>
+							<Link
+								to={`${ROUTE_PROFILE}${userState.email}`}
+								className='border border-blue-300 hover:bg-blue-100 text-blue-500 font-bold text-sm p-2 rounded-full flex justify-center'
+							>
 								View profile
-							</Button>
+							</Link>
 
 							<hr />
 							<div>
