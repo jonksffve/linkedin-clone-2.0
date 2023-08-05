@@ -234,6 +234,59 @@ class UserRetrieveViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
+class UserUpdateViewTest(APITestCase):
+    """
+    Test cases for updating customuser model instances
+    """
+
+    def setUp(self):
+        self.url = reverse("profile-update")
+        self.user_instance = CustomUser.objects.create_user(
+            email="user@site.com", password="test123"
+        )
+        self.another_user_instance = CustomUser.objects.create_user(
+            email="user1@site.com", password="test123"
+        )
+        self.token = self.client.post(
+            reverse("login"),
+            {"username": "user@site.com", "password": "test123"},
+            format="json",
+        ).data["token"]
+
+    # 200ok
+    def test_can_update_user_valid_data(self):
+        valid_data = {
+            "first_name": "New first name",
+            "last_name": "New last name",
+            "title": "Now i have title",
+            "description": "This is my description",
+        }
+
+        response = self.client.patch(
+            self.url,
+            data=valid_data,
+            format="json",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # 401unathorized
+    def test_can_not_update_user_unauthorized(self):
+        valid_data = {
+            "first_name": "New first name",
+            "last_name": "New last name",
+            "title": "Now i have title",
+            "description": "This is my description",
+        }
+
+        response = self.client.patch(
+            self.url,
+            data=valid_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
 class PostListCreateViewTest(APITestCase):
     """
     Test cases for Post model List/Create view

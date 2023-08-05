@@ -12,7 +12,11 @@ from feed.serializers import (
     CommentLikeSerializer,
 )
 
-from accounts.serializers import UserCreationSerializer, UserListSerializer
+from accounts.serializers import (
+    UserCreationSerializer,
+    UserListSerializer,
+    UserUpdateSerializer,
+)
 from accounts.models import CustomUser
 
 from knox.views import LoginView as KnoxLoginView
@@ -76,6 +80,29 @@ class UserRetrieveInformationView(generics.RetrieveAPIView):
             email = self.request.query_params["email"]
             user = get_object_or_404(CustomUser, email=email)
             return user
+        return self.request.user
+
+
+# Accounts
+class UserUpdateView(generics.UpdateAPIView):
+    """
+    View that allow users to edit their accounts
+
+    Returns:
+        - 200 OK: with a serialized representation of the CustomUser object instance.
+        - 400 Bad Request: when data provided was invalid.
+        - 401 Unauthorized: when failed to provide valid user authentication.
+
+    Accepts:
+        - PATCH: only partial updates on a model instance.
+    """
+
+    queryset = CustomUser.objects.all()
+    serializer_class = UserUpdateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ["patch"]
+
+    def get_object(self):
         return self.request.user
 
 

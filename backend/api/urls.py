@@ -8,6 +8,11 @@ urlpatterns = [
         views.UserRetrieveInformationView.as_view(),
         name="profile",
     ),
+    path(
+        "account/profile/edit/",
+        views.UserUpdateView.as_view(),
+        name="profile-update",
+    ),
     path("login/", views.LoginView.as_view(), name="login"),
     path("auth/", include("knox.urls")),
     path("post/", views.PostListCreateView.as_view(), name="post-list-create"),
