@@ -1,6 +1,11 @@
 from django.test import TestCase
-from ..serializers import UserCreationSerializer, UserListSerializer
+from ..serializers import (
+    UserCreationSerializer,
+    UserListSerializer,
+    UserUpdateSerializer,
+)
 from ..models import CustomUser
+from rest_framework.request import Request
 
 
 class TestUserCreationSerializer(TestCase):
@@ -92,15 +97,47 @@ class TestUserListSerializer(TestCase):
         self.assertIn("title", serialized_data)
         self.assertIn("description", serialized_data)
         self.assertIn("name", serialized_data)
-        self.assertIn("followers", serialized_data)
-        self.assertIn("following", serialized_data)
-        self.assertIn("posts", serialized_data)
+        self.assertIn("get_followers", serialized_data)
+        self.assertIn("get_following", serialized_data)
+        self.assertIn("get_posts", serialized_data)
 
         # get_name works
         self.assertEqual(serialized_data["name"], "Test User")
 
         # field values
         self.assertEqual(serialized_data["email"], raw_user_instance.email)
-        self.assertEqual(len(serialized_data["followers"]), 0)
-        self.assertEqual(len(serialized_data["following"]), 0)
-        self.assertEqual(len(serialized_data["posts"]), 0)
+        self.assertEqual(serialized_data["get_followers"], 0)
+        self.assertEqual(serialized_data["get_following"], 0)
+        self.assertEqual(serialized_data["get_posts"], 0)
+
+
+class TestUserUpdateSerializer(TestCase):
+    def setUp(self):
+        self.user_obj = CustomUser.objects.create_user(
+            email="email@site.com", password="test1234pass"
+        )
+
+        self.valid_data = {
+            "first_name": "Updated First Name",
+            "last_name": "Updated Last Name",
+            "title": "Updated Title",
+            "description": "Updated Description",
+        }
+
+    def test_update_valid_data_test_cases(self):
+        self.assertEqual(self.user_obj.first_name, "")
+        self.assertEqual(self.user_obj.last_name, "")
+        self.assertEqual(self.user_obj.title, "")
+        self.assertEqual(self.user_obj.description, "")
+
+        serializer = UserUpdateSerializer(
+            instance=self.user_obj,
+            data=self.valid_data,
+            partial=True,
+        )
+        self.assertTrue(serializer.is_valid())
+        user_instance = serializer.save()
+        self.assertEqual(user_instance.first_name, "Updated First Name")
+        self.assertEqual(user_instance.last_name, "Updated Last Name")
+        self.assertEqual(user_instance.title, "Updated Title")
+        self.assertEqual(user_instance.description, "Updated Description")

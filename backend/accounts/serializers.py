@@ -14,8 +14,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
         """
         Create a custom user object and properly hash the password
         """
-        user = CustomUser.objects.create_user(**validated_data)
-        return user
+        return CustomUser.objects.create_user(**validated_data)
 
     class Meta:
         model = CustomUser
@@ -31,8 +30,6 @@ class UserListSerializer(serializers.ModelSerializer):
 
     def get_name(self, obj):
         return obj.get_full_name()
-
-    #! UPDATE TESTS CASES 3/8
 
     class Meta:
         model = CustomUser
@@ -64,3 +61,19 @@ class UserListSerializer(serializers.ModelSerializer):
             "get_following",
             "get_posts",
         ]
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["first_name", "last_name", "avatar", "banner", "title", "description"]
+
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.get("first_name", instance.email)
+        instance.last_name = validated_data.get("last_name", instance.last_name)
+        instance.avatar = validated_data.get("avatar", instance.avatar)
+        instance.banner = validated_data.get("banner", instance.banner)
+        instance.title = validated_data.get("title", instance.title)
+        instance.description = validated_data.get("description", instance.description)
+        instance.save()
+        return instance
