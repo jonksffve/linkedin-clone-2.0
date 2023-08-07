@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 import CardContainer from '@/components/CardContainer';
 import { UserResponse } from '@/helpers/types';
@@ -6,6 +6,7 @@ import { getUserInformationAPI } from '@/api/auth';
 import { useAppSelector } from '@/store/hooks';
 import { FiEdit2 } from 'react-icons/fi';
 import ConnectionsSummary from '@/components/Feed/ConnectionsSummary';
+import { ROUTE_PROFILE_EDIT } from '@/helpers/routes';
 
 const ProfilePage = () => {
     const { userEmail } = useParams();
@@ -42,18 +43,34 @@ const ProfilePage = () => {
                             <FiEdit2 size={20} />
                         </button>
                     </div>
-                    <div className='relative mt-10'>
-                        <div>
+                    <div className='relative mt-10 p-4 flex flex-row gap-2 w-full'>
+                        <div className='w-1/2'>
                             <p className='font-semibold'>{profile?.name}</p>
-                            <p>{profile?.description}</p>
-                            <p className='text-neutral-400 text-sm'>{profile?.location}</p>
-                            <p className='text-blue-500 text-sm font-semibold'>{profile?.get_followers} contacts</p>
+                            <p className='text-neutral-500 text-sm'>
+                                {profile?.title ? profile.title : 'No title set'}
+                            </p>
+                            <p>{profile?.description ? profile.description : 'No description set'}</p>
+
+                            <p className='text-blue-500 text-sm font-semibold mt-2'>
+                                {profile?.get_followers} contacts
+                            </p>
                         </div>
-                        <button className='absolute top-0 right-5 rounded-full bg-white p-2'>
+                        <div className='w-1/2'>
+                            <p>{profile?.collage ? profile.collage : 'No collage set'}</p>
+                            <p>{profile?.actual_work ? profile.actual_work : 'No organization set'}</p>
+                            <p className='text-neutral-400 text-sm'>
+                                {profile?.location ? profile.location : 'No location set'}
+                            </p>
+                        </div>
+                        <Link
+                            className='absolute top-0 right-5 rounded-full bg-white p-2'
+                            to={ROUTE_PROFILE_EDIT}
+                        >
                             <FiEdit2 size={20} />
-                        </button>
+                        </Link>
                     </div>
                 </CardContainer>
+                <p>Latest posts</p>
                 <CardContainer>Body Posts</CardContainer>
             </div>
             <div className='basis-1/4'>
