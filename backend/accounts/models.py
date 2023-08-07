@@ -36,8 +36,35 @@ class CustomUser(AbstractUser):
         blank=True,
         null=True,
     )
-    title = models.CharField(_("title"), max_length=50)
-    description = models.TextField(_("description"))
+    title = models.CharField(
+        _("title"),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    description = models.TextField(
+        _("description"),
+        blank=True,
+        null=True,
+    )
+    collage = models.CharField(
+        _("collage"),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    actual_work = models.CharField(
+        _("work"),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    location = models.CharField(
+        _("location"),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
 
     objects = CustomUserManager()
 
