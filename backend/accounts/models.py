@@ -47,7 +47,7 @@ class CustomUser(AbstractUser):
         blank=True,
         null=True,
     )
-    collage = models.CharField(
+    university = models.CharField(
         _("collage"),
         max_length=50,
         blank=True,
