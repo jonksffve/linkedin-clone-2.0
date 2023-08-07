@@ -32,7 +32,7 @@ export interface UserUpdateForm {
 
 export interface UserState {
     token: string | undefined;
-    id: number | undefined;
+    id: number;
     first_name: string;
     last_name: string;
     email: string;
@@ -40,6 +40,9 @@ export interface UserState {
     banner: string;
     title: string;
     description: string;
+    university: string;
+    actual_work: string;
+    location: string;
     name: string;
     get_followers: number;
     get_following: number;
@@ -57,6 +60,9 @@ export interface UserResponse {
     banner: string;
     title: string;
     description: string;
+    university: string;
+    actual_work: string;
+    location: string;
     name: string;
     get_followers: number;
     get_following: number;
