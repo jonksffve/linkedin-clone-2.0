@@ -69,7 +69,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         fields = ["first_name", "last_name", "avatar", "banner", "title", "description"]
 
     def update(self, instance, validated_data):
-        instance.first_name = validated_data.get("first_name", instance.email)
+        instance.first_name = validated_data.get("first_name", instance.first_name)
         instance.last_name = validated_data.get("last_name", instance.last_name)
         instance.avatar = validated_data.get("avatar", instance.avatar)
         instance.banner = validated_data.get("banner", instance.banner)
