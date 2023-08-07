@@ -15,7 +15,7 @@ from feed.serializers import (
 from accounts.serializers import (
     UserCreationSerializer,
     UserListSerializer,
-    UserUpdateSerializer,
+    UserInformationUpdateSerializer,
 )
 from accounts.models import CustomUser
 
@@ -98,7 +98,7 @@ class UserUpdateView(generics.UpdateAPIView):
     """
 
     queryset = CustomUser.objects.all()
-    serializer_class = UserUpdateSerializer
+    serializer_class = UserInformationUpdateSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ["patch"]
 
