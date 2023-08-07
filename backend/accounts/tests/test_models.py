@@ -27,9 +27,9 @@ class CustomUserModelTest(TestCase):
         self.assertEqual(
             self.user.description, "Im a Software Engineer living in Madrid"
         )
-        self.assertIn("collage", self.user)
-        self.assertIn("actual_work", self.user)
-        self.assertIn("location", self.user)
+        self.assertIsNone(self.user.university)
+        self.assertIsNone(self.user.actual_work)
+        self.assertIsNone(self.user.location)
 
     def test_user_model_methods(self):
         self.assertEqual(self.user.get_full_name(), "Testing Users")

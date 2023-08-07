@@ -2,10 +2,9 @@ from django.test import TestCase
 from ..serializers import (
     UserCreationSerializer,
     UserListSerializer,
-    UserUpdateSerializer,
+    UserInformationUpdateSerializer,
 )
 from ..models import CustomUser
-from rest_framework.request import Request
 
 
 class TestUserCreationSerializer(TestCase):
@@ -30,8 +29,11 @@ class TestUserCreationSerializer(TestCase):
         self.assertEqual(user_instance.email, "test@site.com")
         self.assertIsNotNone(user_instance.avatar, None)
         self.assertIsNotNone(user_instance.banner, None)
-        self.assertEqual(user_instance.title, "")
-        self.assertEqual(user_instance.description, "")
+        self.assertIsNone(user_instance.title)
+        self.assertIsNone(user_instance.description)
+        self.assertIsNone(user_instance.university)
+        self.assertIsNone(user_instance.actual_work)
+        self.assertIsNone(user_instance.location)
         # test hashing password
         self.assertNotEqual(user_instance.password, valid_data["password"])
 
@@ -87,7 +89,7 @@ class TestUserListSerializer(TestCase):
         serialized_data = serializer.data
 
         # all the fields
-        self.assertTrue(len(serialized_data), 12)
+        self.assertTrue(len(serialized_data), 15)
         self.assertIn("id", serialized_data)
         self.assertIn("first_name", serialized_data)
         self.assertIn("last_name", serialized_data)
@@ -96,6 +98,9 @@ class TestUserListSerializer(TestCase):
         self.assertIn("banner", serialized_data)
         self.assertIn("title", serialized_data)
         self.assertIn("description", serialized_data)
+        self.assertIn("university", serialized_data)
+        self.assertIn("actual_work", serialized_data)
+        self.assertIn("location", serialized_data)
         self.assertIn("name", serialized_data)
         self.assertIn("get_followers", serialized_data)
         self.assertIn("get_following", serialized_data)
@@ -111,28 +116,34 @@ class TestUserListSerializer(TestCase):
         self.assertEqual(serialized_data["get_posts"], 0)
 
 
-class TestUserUpdateSerializer(TestCase):
+class TestUserInformationUpdateSerializer(TestCase):
     def setUp(self):
         self.user_obj = CustomUser.objects.create_user(
             email="email@site.com", password="test1234pass"
         )
 
-        self.valid_data = {
+    def test_deserialization_valid_data(self):
+        valid_data = {
             "first_name": "Updated First Name",
             "last_name": "Updated Last Name",
             "title": "Updated Title",
             "description": "Updated Description",
+            "university": "Updated University",
+            "actual_work": "Updated Work Description",
+            "location": "Updated Location",
         }
 
-    def test_update_valid_data_test_cases(self):
         self.assertEqual(self.user_obj.first_name, "")
         self.assertEqual(self.user_obj.last_name, "")
-        self.assertEqual(self.user_obj.title, "")
-        self.assertEqual(self.user_obj.description, "")
+        self.assertIsNone(self.user_obj.title)
+        self.assertIsNone(self.user_obj.description)
+        self.assertIsNone(self.user_obj.university)
+        self.assertIsNone(self.user_obj.actual_work)
+        self.assertIsNone(self.user_obj.location)
 
-        serializer = UserUpdateSerializer(
+        serializer = UserInformationUpdateSerializer(
             instance=self.user_obj,
-            data=self.valid_data,
+            data=valid_data,
             partial=True,
         )
         self.assertTrue(serializer.is_valid())
@@ -141,3 +152,6 @@ class TestUserUpdateSerializer(TestCase):
         self.assertEqual(user_instance.last_name, "Updated Last Name")
         self.assertEqual(user_instance.title, "Updated Title")
         self.assertEqual(user_instance.description, "Updated Description")
+        self.assertEqual(user_instance.university, "Updated University")
+        self.assertEqual(user_instance.actual_work, "Updated Work Description")
+        self.assertEqual(user_instance.location, "Updated Location")

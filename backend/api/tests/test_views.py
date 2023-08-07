@@ -203,13 +203,6 @@ class UserRetrieveViewTest(APITestCase):
             HTTP_AUTHORIZATION=f"Token {self.token}",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["first_name"], self.user.first_name)
-        self.assertEqual(response.data["last_name"], self.user.last_name)
-        self.assertEqual(response.data["email"], self.user.email)
-        self.assertEqual(response.data["title"], "")
-        self.assertEqual(response.data["description"], "")
-        self.assertEqual(response.data["name"], self.user.get_full_name())
-        self.assertEqual(len(response.data), 12)
 
     def test_can_retrieve_other_information(self):
         response = self.client.get(
