@@ -4,6 +4,7 @@ import RootLayout from './layouts/RootLayout';
 import ErrorPage from '../pages/ErrorPage';
 import FeedPage from '@/pages/FeedPage';
 import ProfilePage from '@/pages/ProfilePage';
+import EditProfilePage from '@/pages/EditProfilePage';
 
 export const router = createBrowserRouter([
     {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
             {
                 path: 'profile/:userEmail/',
                 element: <ProfilePage />,
+            },
+            {
+                path: 'profile/edit/',
+                element: <EditProfilePage />,
             },
         ],
     },
