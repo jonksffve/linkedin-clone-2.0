@@ -1,16 +1,20 @@
 import { Link, useParams } from 'react-router-dom';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import CardContainer from '@/components/CardContainer';
-import { UserResponse } from '@/helpers/types';
+import { ImageInformation, UserResponse } from '@/helpers/types';
 import { getUserInformationAPI } from '@/api/auth';
 import { useAppSelector } from '@/store/hooks';
 import { FiEdit2 } from 'react-icons/fi';
 import ConnectionsSummary from '@/components/Feed/ConnectionsSummary';
 import { ROUTE_PROFILE_EDIT } from '@/helpers/routes';
+import ProfileImageModal from '@/components/Modals/ProfileImageModal';
 
 const ProfilePage = () => {
     const { userEmail } = useParams();
     const userState = useAppSelector((state) => state.user);
+    const [modalOpened, setModalOpened] = useState(false);
+    const [modalImageInformation, setmodalImageInformation] = useState<ImageInformation>();
+
     const [profile, setProfile] = useState<UserResponse>();
 
     useMemo(() => {
@@ -24,6 +28,18 @@ const ProfilePage = () => {
             .catch((err) => console.log(err));
     }, [userState.token, userEmail]);
 
+    const handleShowModal = useCallback(() => {
+        setModalOpened(true);
+    }, []);
+
+    const handleCloseModal = useCallback(() => {
+        setModalOpened(false);
+    }, []);
+
+    useEffect(() => {
+        console.log(modalImageInformation);
+    }, [modalImageInformation]);
+
     return (
         <div className='flex flex-row gap-4'>
             <div className='basis-3/4'>
@@ -35,11 +51,35 @@ const ProfilePage = () => {
                             className='h-[200px] w-full bg-neutral-400 rounded-t-lg'
                         />
                         <img
+                            onClick={() => {
+                                setmodalImageInformation(() => {
+                                    if (!profile?.avatar) return;
+
+                                    return {
+                                        type: 'avatar',
+                                        url: profile.avatar,
+                                    };
+                                });
+                                handleShowModal();
+                            }}
                             src={profile?.avatar}
                             alt=''
                             className='w-[150px] h-[150px] rounded-full border-2 border-black absolute bottom-[-20%] left-5 hover:cursor-pointer'
                         />
-                        <button className='absolute top-5 right-5 rounded-full bg-white p-2'>
+                        <button
+                            className='absolute top-5 right-5 rounded-full bg-white p-2'
+                            onClick={() => {
+                                setmodalImageInformation(() => {
+                                    if (!profile?.avatar) return;
+
+                                    return {
+                                        type: 'banner',
+                                        url: profile.banner,
+                                    };
+                                });
+                                handleShowModal();
+                            }}
+                        >
                             <FiEdit2 size={20} />
                         </button>
                     </div>
@@ -56,7 +96,7 @@ const ProfilePage = () => {
                             </p>
                         </div>
                         <div className='w-1/2'>
-                            <p>{profile?.collage ? profile.collage : 'No collage set'}</p>
+                            <p>{profile?.university ? profile.university : 'No university set'}</p>
                             <p>{profile?.actual_work ? profile.actual_work : 'No organization set'}</p>
                             <p className='text-neutral-400 text-sm'>
                                 {profile?.location ? profile.location : 'No location set'}
@@ -78,6 +118,11 @@ const ProfilePage = () => {
                     <ConnectionsSummary />
                 </CardContainer>
             </div>
+            <ProfileImageModal
+                isOpen={modalOpened}
+                onClose={handleCloseModal}
+                imageInfo={modalImageInformation}
+            />
         </div>
     );
 };
