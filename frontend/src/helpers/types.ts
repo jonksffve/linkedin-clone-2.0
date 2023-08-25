@@ -26,13 +26,16 @@ export interface UserUpdateForm {
     last_name?: string;
     title?: string;
     description?: string;
+    university?: string;
+    actual_work?: string;
+    location?: string;
 }
 
 //! END FORMS
 
 export interface UserState {
     token: string | undefined;
-    id: number;
+    id: number | undefined;
     first_name: string;
     last_name: string;
     email: string;
@@ -99,4 +102,9 @@ export interface Comment {
     parent: string | undefined;
     replies_count: number;
     is_liked: boolean;
+}
+
+export interface ImageInformation {
+    type: string;
+    url: string;
 }
