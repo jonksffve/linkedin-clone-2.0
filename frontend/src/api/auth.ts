@@ -1,14 +1,8 @@
 import { toast } from 'react-toastify';
 import { toastConfig } from '@/helpers/toastifyConfig';
-import { ErrorResponse, LoginFormInputs, RegisterFormInputs, UserUpdateForm } from '@/helpers/types';
+import { ErrorResponse, LoginFormInputs, RegisterFormInputs } from '@/helpers/types';
 import axios from 'axios';
-import {
-    ENDPOINT_ACCOUNT,
-    ENDPOINT_LOGIN,
-    ENDPOINT_LOGOUT,
-    ENDPOINT_PROFILE,
-    ENDPOINT_PROFILE_EDIT,
-} from '@/helpers/routes';
+import { ENDPOINT_ACCOUNT, ENDPOINT_LOGIN, ENDPOINT_LOGOUT, ENDPOINT_PROFILE } from '@/helpers/routes';
 import { UseFormReset, UseFormSetError } from 'react-hook-form';
 
 export const createUserAPI = async (
@@ -100,16 +94,5 @@ export const logoutUserAPI = async (token: string) => {
         );
     } catch (error) {
         toast.error('Something unexpected happened.', toastConfig);
-    }
-};
-
-export const updateUserAPI = async (token: string, data: UserUpdateForm) => {
-    try {
-        await axios.patch(ENDPOINT_PROFILE_EDIT, data, {
-            headers: { Authorization: `Token ${token}` },
-        });
-        toast.success('User information updated.', toastConfig);
-    } catch (error) {
-        toast.error('Could not update user information.', toastConfig);
     }
 };
