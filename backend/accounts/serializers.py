@@ -75,3 +75,15 @@ class UserInformationUpdateSerializer(serializers.ModelSerializer):
         instance.location = validated_data.get("location", instance.location)
         instance.save()
         return instance
+
+
+class AvatarUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["avatar"]
+
+
+class BannerUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["banner"]
