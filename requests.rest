@@ -7,7 +7,7 @@ content-type: application/json
 
 {
     "username": "arya@site.com",
-    "password": "maijo132"
+    "password": "123456"
 }
 
 ### Cheking logout
