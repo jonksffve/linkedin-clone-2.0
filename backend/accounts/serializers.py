@@ -77,13 +77,17 @@ class UserInformationUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
-class AvatarUpdateSerializer(serializers.ModelSerializer):
+class UserAvatarUpdateSerializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField(allow_empty_file=False)
+
     class Meta:
         model = CustomUser
         fields = ["avatar"]
 
 
-class BannerUpdateSerializer(serializers.ModelSerializer):
+class UserBannerUpdateSerializer(serializers.ModelSerializer):
+    banner = serializers.ImageField(allow_empty_file=False)
+
     class Meta:
         model = CustomUser
         fields = ["banner"]

@@ -1,8 +1,11 @@
 from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
 from ..serializers import (
     UserCreationSerializer,
     UserListSerializer,
     UserInformationUpdateSerializer,
+    UserAvatarUpdateSerializer,
+    UserBannerUpdateSerializer,
 )
 from ..models import CustomUser
 
@@ -155,3 +158,106 @@ class TestUserInformationUpdateSerializer(TestCase):
         self.assertEqual(user_instance.university, "Updated University")
         self.assertEqual(user_instance.actual_work, "Updated Work Description")
         self.assertEqual(user_instance.location, "Updated Location")
+
+
+class TestUserAvatarUpdateSerializer(TestCase):
+    def setUp(self):
+        self.user_obj = CustomUser.objects.create_user(
+            email="test@site.com", password="test1234"
+        )
+        self.avatar = SimpleUploadedFile(
+            name="test_image.jpg",
+            content=open("media/test_files/nerdy.jpg", "rb").read(),
+        )
+        self.user_obj.avatar = self.avatar
+        self.user_obj.save()
+
+    def test_deserialization_valid_data(self):
+        updated_avatar = SimpleUploadedFile(
+            name="test_updated_image.jpg",
+            content=open("media/test_files/updated_avatar.jfif", "rb").read(),
+        )
+        valid_data = {"avatar": updated_avatar}
+
+        serializer = UserAvatarUpdateSerializer(instance=self.user_obj, data=valid_data)
+        self.assertTrue(serializer.is_valid())
+        # make sure it updated it
+        updated_user = serializer.save()
+        self.assertNotEqual(updated_user.avatar, self.avatar)
+
+    def test_deserialization_invalid_data(self):
+        invalid_data = {
+            "avatar": SimpleUploadedFile(
+                name="test_updated_image.jpg",
+                content=open("media/test_files/document.pdf", "rb").read(),
+            )
+        }
+        serializer = UserAvatarUpdateSerializer(
+            instance=self.user_obj, data=invalid_data
+        )
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("avatar", serializer.errors)
+
+        missing_data = {}
+        serializer = UserAvatarUpdateSerializer(
+            instance=self.user_obj, data=missing_data
+        )
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("avatar", serializer.errors)
+
+    def test_serialization_response(self):
+        serializer = UserAvatarUpdateSerializer(instance=self.user_obj)
+        serializer_data = serializer.data
+        self.assertEqual(len(serializer_data), 1)
+
+
+class TestUserBannerUpdateSerializer(TestCase):
+    # UserBannerUpdateSerializer
+    def setUp(self):
+        self.user_obj = CustomUser.objects.create_user(
+            email="test@site.com", password="test1234"
+        )
+        self.banner = SimpleUploadedFile(
+            name="test_banner.jfif",
+            content=open("media/test_files/banner.jfif", "rb").read(),
+        )
+        self.user_obj.banner = self.banner
+        self.user_obj.save()
+
+    def test_deserialization_valid_data(self):
+        updated_banner = SimpleUploadedFile(
+            name="test_updated_image.jpg",
+            content=open("media/test_files/updated_banner.jfif", "rb").read(),
+        )
+        valid_data = {"banner": updated_banner}
+
+        serializer = UserBannerUpdateSerializer(instance=self.user_obj, data=valid_data)
+        self.assertTrue(serializer.is_valid())
+        # make sure it updated it
+        updated_user = serializer.save()
+        self.assertNotEqual(updated_user.banner, self.banner)
+
+    def test_deserialization_invalid_data(self):
+        invalid_data = {
+            "banner": SimpleUploadedFile(
+                name="test_updated_image.jpg",
+                content=open("media/test_files/document.pdf", "rb").read(),
+            )
+        }
+        serializer = UserBannerUpdateSerializer(
+            instance=self.user_obj, data=invalid_data
+        )
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("banner", serializer.errors)
+
+        missing_data = {}
+        serializer = UserBannerUpdateSerializer(
+            instance=self.user_obj, data=missing_data
+        )
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("banner", serializer.errors)
+
+    def test_serialization_response(self):
+        serializer = UserBannerUpdateSerializer(instance=self.user_obj)
+        serializer_data = serializer.data
+        self.assertEqual(len(serializer_data), 1)
