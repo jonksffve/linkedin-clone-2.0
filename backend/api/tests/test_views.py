@@ -3,6 +3,7 @@ from rest_framework import status
 
 from django.urls import reverse
 from django.db import IntegrityError
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from accounts.models import CustomUser
 
@@ -229,7 +230,7 @@ class UserRetrieveViewTest(APITestCase):
 
 class UserUpdateViewTest(APITestCase):
     """
-    Test cases for updating customuser model instances
+    Test cases for updating customuser model instances information
     """
 
     def setUp(self):
@@ -276,6 +277,118 @@ class UserUpdateViewTest(APITestCase):
             self.url,
             data=valid_data,
             format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class UserUpdateAvatarViewTest(APITestCase):
+    """
+    Test cases for updating customuser model instances avatar
+    """
+
+    def setUp(self):
+        self.url = reverse("profile-avatar-update")
+        self.user_instance = CustomUser.objects.create_user(
+            email="user@site.com", password="test123"
+        )
+        self.another_user_instance = CustomUser.objects.create_user(
+            email="user1@site.com", password="test123"
+        )
+        self.token = self.client.post(
+            reverse("login"),
+            {"username": "user@site.com", "password": "test123"},
+            format="json",
+        ).data["token"]
+
+    # 200ok
+    def test_can_update_avatar_valid_data(self):
+        valid_data = {
+            "avatar": SimpleUploadedFile(
+                name="test_updated_image.jpg",
+                content=open("media/test_files/updated_avatar.jfif", "rb").read(),
+                content_type="image/jpeg",
+            )
+        }
+
+        response = self.client.patch(
+            self.url,
+            data=valid_data,
+            format="multipart",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # 401unathorized
+    def test_can_not_update_user_unauthorized(self):
+        valid_data = {
+            "avatar": SimpleUploadedFile(
+                name="test_updated_image.jpg",
+                content=open("media/test_files/updated_avatar.jfif", "rb").read(),
+                content_type="image/jpeg",
+            )
+        }
+
+        response = self.client.patch(
+            self.url,
+            data=valid_data,
+            format="multipart",
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class UserUpdateBannerViewTest(APITestCase):
+    """
+    Test cases for updating customuser model instances banner
+    """
+
+    def setUp(self):
+        self.url = reverse("profile-banner-update")
+        self.user_instance = CustomUser.objects.create_user(
+            email="user@site.com", password="test123"
+        )
+        self.another_user_instance = CustomUser.objects.create_user(
+            email="user1@site.com", password="test123"
+        )
+        self.token = self.client.post(
+            reverse("login"),
+            {"username": "user@site.com", "password": "test123"},
+            format="json",
+        ).data["token"]
+
+    # 200ok
+    def test_can_update_avatar_valid_data(self):
+        valid_data = {
+            "banner": SimpleUploadedFile(
+                name="test_updated_image.jpg",
+                content=open("media/test_files/updated_banner.jfif", "rb").read(),
+                content_type="image/jpeg",
+            )
+        }
+
+        response = self.client.patch(
+            self.url,
+            data=valid_data,
+            format="multipart",
+            HTTP_AUTHORIZATION=f"Token {self.token}",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # 401unathorized
+    def test_can_not_update_user_unauthorized(self):
+        valid_data = {
+            "banner": SimpleUploadedFile(
+                name="test_updated_image.jpg",
+                content=open("media/test_files/updated_banner.jfif", "rb").read(),
+                content_type="image/jpeg",
+            )
+        }
+
+        response = self.client.patch(
+            self.url,
+            data=valid_data,
+            format="multipart",
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 

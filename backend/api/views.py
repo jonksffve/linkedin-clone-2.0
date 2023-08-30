@@ -16,6 +16,8 @@ from accounts.serializers import (
     UserCreationSerializer,
     UserListSerializer,
     UserInformationUpdateSerializer,
+    UserAvatarUpdateSerializer,
+    UserBannerUpdateSerializer,
 )
 from accounts.models import CustomUser
 
@@ -99,6 +101,50 @@ class UserUpdateView(generics.UpdateAPIView):
 
     queryset = CustomUser.objects.all()
     serializer_class = UserInformationUpdateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ["patch"]
+
+    def get_object(self):
+        return self.request.user
+
+
+class UserUpdateAvatarView(generics.UpdateAPIView):
+    """
+    View that allow users to edit their avatar image
+
+    Returns:
+        - 200 Ok: with a serialized representation of the CustomUser object instance.
+        - 400 Bad Request: when data provided was invalid.
+        - 401 Unauthorized: when failed to provide valid user authentication.
+
+    Accepts:
+        - PATCH: only partial updates on a model instance
+    """
+
+    queryset = CustomUser.objects.all()
+    serializer_class = UserAvatarUpdateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ["patch"]
+
+    def get_object(self):
+        return self.request.user
+
+
+class UserUpdateBannerView(generics.UpdateAPIView):
+    """
+    View that allow users to edit their banner image
+
+    Returns:
+        - 200 Ok: with a serialized representation of the CustomUser object instance.
+        - 400 Bad Request: when data provided was invalid.
+        - 401 Unauthorized: when failed to provide valid user authentication.
+
+    Accepts:
+        - PATCH: only partial updates on a model instance
+    """
+
+    queryset = CustomUser.objects.all()
+    serializer_class = UserBannerUpdateSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ["patch"]
 
