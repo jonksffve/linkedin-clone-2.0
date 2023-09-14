@@ -1,19 +1,21 @@
 import { Link, useParams } from 'react-router-dom';
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import CardContainer from '@/components/CardContainer';
 import { ImageInformation, UserResponse } from '@/helpers/types';
 import { getUserInformationAPI } from '@/api/auth';
-import { useAppSelector } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { FiEdit2 } from 'react-icons/fi';
 import ConnectionsSummary from '@/components/Feed/ConnectionsSummary';
 import { ROUTE_PROFILE_EDIT } from '@/helpers/routes';
 import ProfileImageModal from '@/components/Modals/ProfileImageModal';
+import { uiActions } from '@/store/slices/ui-slice';
 
 const ProfilePage = () => {
     const { userEmail } = useParams();
     const userState = useAppSelector((state) => state.user);
-    const [modalOpened, setModalOpened] = useState(false);
+    const uiState = useAppSelector(state => state.ui)
     const [modalImageInformation, setmodalImageInformation] = useState<ImageInformation>();
+    const dispatch = useAppDispatch()
 
     const [profile, setProfile] = useState<UserResponse>();
 
@@ -23,22 +25,17 @@ const ProfilePage = () => {
         void getUserInformationAPI(userState.token, userEmail)
             .then((response) => {
                 setProfile(response?.data as UserResponse);
-                console.log(response);
             })
             .catch((err) => console.log(err));
     }, [userState.token, userEmail]);
 
     const handleShowModal = useCallback(() => {
-        setModalOpened(true);
-    }, []);
+        dispatch(uiActions.onShowUploadModal())
+    }, [dispatch]);
 
     const handleCloseModal = useCallback(() => {
-        setModalOpened(false);
-    }, []);
-
-    useEffect(() => {
-        console.log(modalImageInformation);
-    }, [modalImageInformation]);
+        dispatch(uiActions.onCloseUploadModal())
+    }, [dispatch]);
 
     return (
         <div className='flex flex-row gap-4'>
@@ -119,7 +116,7 @@ const ProfilePage = () => {
                 </CardContainer>
             </div>
             <ProfileImageModal
-                isOpen={modalOpened}
+                isOpen={uiState.showUploadModal}
                 onClose={handleCloseModal}
                 imageInfo={modalImageInformation}
             />
