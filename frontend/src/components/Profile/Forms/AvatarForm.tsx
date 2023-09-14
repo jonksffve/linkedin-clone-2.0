@@ -1,18 +1,28 @@
-import { updateAvatarAPI } from '@/api/editprofile';
-import { useAppSelector } from '@/store/hooks';
+import { updateUserImageAPI } from '@/api/editprofile';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { uiActions } from '@/store/slices/ui-slice';
+import { userActions } from '@/store/slices/user-slice';
 import { useCallback, useState } from 'react';
+
 
 const AvatarForm = () => {
     const [newImage, setNewImage] = useState<File | undefined>(undefined);
     const userState = useAppSelector((state) => state.user);
+    const dispatch = useAppDispatch()
 
     const submitHandler = useCallback(
-        (e: React.FormEvent<HTMLFormElement>) => {
+        async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             if (!newImage || !userState.token) return;
-            void updateAvatarAPI(newImage, userState.token);
+            try {
+                const response = await updateUserImageAPI(newImage, userState.token, "avatar"); 
+                dispatch(userActions.updateAvatar(response.avatar))
+                dispatch(uiActions.onCloseUploadModal())
+            } catch (error) {
+                console.log(error)
+            }
         },
-        [newImage, userState.token]
+        [newImage, userState.token, dispatch]
     );
 
     const imageChangeHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
