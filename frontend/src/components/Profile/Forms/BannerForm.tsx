@@ -1,6 +1,7 @@
 import { updateUserImageAPI } from '@/api/editprofile';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { uiActions } from '@/store/slices/ui-slice';
+import { userActions } from '@/store/slices/user-slice';
 import { useCallback, useState } from 'react';
 
 const BannerForm = () => {
@@ -14,7 +15,7 @@ const BannerForm = () => {
 			if (!newImage || !userState.token) return;
 			try {
 				const response = await updateUserImageAPI(newImage, userState.token, 'banner');
-				dispatch(userActions.updateAvatar(response.banner));
+				dispatch(userActions.updateBanner(response.banner as string));
 				dispatch(uiActions.onCloseUploadModal());
 			} catch (error) {
 				console.log(error);

@@ -1,5 +1,6 @@
 import { ROUTE_PROFILE_EDIT } from '@/helpers/routes';
 import { ImageInformation, UserResponse } from '@/helpers/types';
+import { useAppSelector } from '@/store/hooks';
 import { FiEdit2 } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
@@ -11,11 +12,13 @@ interface ProfileHeaderProps {
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ editable, profile, onEdit, onSetInformation }) => {
+	const userState = useAppSelector((state) => state.user);
+
 	return (
 		<>
 			<div className='relative'>
 				<img
-					src={profile?.banner}
+					src={editable ? userState.banner : profile?.banner}
 					alt=''
 					className='h-[200px] w-full bg-neutral-400 rounded-t-lg'
 				/>
@@ -32,7 +35,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ editable, profile, onEdit
 							});
 							onEdit();
 						}}
-						src={profile?.avatar}
+						src={userState.avatar}
 						alt=''
 						className='w-[150px] h-[150px] rounded-full border-2 border-black absolute bottom-[-20%] left-5 hover:cursor-pointer'
 					/>
