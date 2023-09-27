@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 import { toastConfig } from '@/helpers/toastifyConfig';
-import { ErrorResponse, LoginFormInputs, RegisterFormInputs, UserResponse } from '@/helpers/types';
+import { ErrorResponse, LoginFormInputs, RegisterFormInputs } from '@/helpers/types';
 import axios from 'axios';
 import { ENDPOINT_ACCOUNT, ENDPOINT_LOGIN, ENDPOINT_LOGOUT, ENDPOINT_PROFILE } from '@/helpers/routes';
 import { UseFormReset, UseFormSetError } from 'react-hook-form';
@@ -59,11 +59,7 @@ export const createTokenAuthAPI = async (data: LoginFormInputs, setIsLoading: (v
 	}
 };
 
-export const getUserInformationAPI = async (
-	setProfile: React.Dispatch<React.SetStateAction<UserResponse | undefined>>,
-	token: string,
-	userEmail?: string
-) => {
+export const getUserInformationAPI = async (token: string, userEmail?: string) => {
 	try {
 		let url = ENDPOINT_PROFILE;
 
@@ -76,10 +72,10 @@ export const getUserInformationAPI = async (
 				Authorization: `Token ${token}`,
 			},
 		});
-		setProfile(response.data as UserResponse);
+		return response;
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
-			console.log(error);
+			throw error;
 		}
 		toast.error('Something unexpected happened.', toastConfig);
 	}
