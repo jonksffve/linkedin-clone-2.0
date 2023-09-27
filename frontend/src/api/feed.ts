@@ -1,16 +1,6 @@
-import {
-	ENDPOINT_POST_LIKE,
-	ENDPOINT_POST,
-	ENDPOINT_COMMENT,
-	ENDPOINT_COMMENT_LIKE,
-} from '@/helpers/routes';
+import { ENDPOINT_POST_LIKE, ENDPOINT_POST, ENDPOINT_COMMENT, ENDPOINT_COMMENT_LIKE } from '@/helpers/routes';
 import { toastConfig } from '@/helpers/toastifyConfig';
-import {
-	Comment,
-	CommentFormInput,
-	CreatePostFormInputs,
-	Post,
-} from '@/helpers/types';
+import { Comment, CommentFormInput, CreatePostFormInputs, Post } from '@/helpers/types';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { UseFormReset } from 'react-hook-form';
@@ -21,15 +11,23 @@ import { Dispatch } from '@reduxjs/toolkit';
 export const getPosts = async (
 	token: string,
 	setData: (val: Post[]) => void,
-	setIsLoading: (val: boolean) => void
+	setIsLoading: (val: boolean) => void,
+	email?: string
 ) => {
 	try {
+		let url = ENDPOINT_POST;
 		setIsLoading(true);
-		const response = await axios.get(ENDPOINT_POST, {
+
+		if (email) {
+			url += `?email=${email}`;
+		}
+
+		const response = await axios.get(url, {
 			headers: {
 				Authorization: `Token ${token}`,
 			},
 		});
+
 		setData(response.data as Post[]);
 	} catch (error) {
 		toast.error('Something happened fetching data', toastConfig);
@@ -120,10 +118,7 @@ export const createComment = async (
 		);
 		reset();
 		onComment.setCommentsCount((prevState) => prevState + 1);
-		onComment.setComments((prevState) => [
-			response.data as Comment,
-			...prevState,
-		]);
+		onComment.setComments((prevState) => [response.data as Comment, ...prevState]);
 
 		if (parentId && onComment.setRepliesCount) {
 			onComment.setRepliesCount((prevState) => prevState + 1);

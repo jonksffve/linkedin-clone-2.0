@@ -169,11 +169,16 @@ class PostListCreateView(generics.ListCreateAPIView):
     """
 
     permission_classes = [permissions.IsAuthenticated]
-    queryset = Post.objects.all()
+    queryset = None
     serializer_class = PostSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+    
+    def get_queryset(self):
+        if "email" in self.request.query_params:
+            return Post.objects.filter(user__email=self.request.query_params['email'])
+        return Post.objects.all()
 
 
 class PostLikeCreateView(generics.CreateAPIView):
