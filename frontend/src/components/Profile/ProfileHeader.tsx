@@ -3,6 +3,7 @@ import { ImageInformation, UserResponse } from '@/helpers/types';
 import { useAppSelector } from '@/store/hooks';
 import { FiEdit2 } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import CardContainer from '../CardContainer';
 
 interface ProfileHeaderProps {
 	editable: boolean;
@@ -15,7 +16,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ editable, profile, onEdit
 	const userState = useAppSelector((state) => state.user);
 
 	return (
-		<>
+		<CardContainer>
 			<div className='relative'>
 				<img
 					src={editable ? userState.banner : profile?.banner}
@@ -90,7 +91,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ editable, profile, onEdit
 					</Link>
 				)}
 			</div>
-		</>
+		</CardContainer>
 	);
 };
 
