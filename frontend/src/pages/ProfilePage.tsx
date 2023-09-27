@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import CardContainer from '@/components/CardContainer';
+import { useCallback, useEffect, useState } from 'react';
 import { ImageInformation, Post, UserResponse } from '@/helpers/types';
 import { getUserInformationAPI } from '@/api/auth';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -34,7 +33,9 @@ const ProfilePage = () => {
 				setEditable(true);
 			}
 
-			await getUserInformationAPI(setProfile, userState.token, userEmail);
+			await getUserInformationAPI(userState.token, userEmail).then((resp) => {
+				setProfile(resp?.data as UserResponse);
+			});
 			await getPosts(userState.token, setUserPosts, setLoadingPosts, userEmail);
 		};
 
